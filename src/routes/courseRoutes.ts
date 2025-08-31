@@ -4,7 +4,8 @@ import { validateBody, validateParams } from '../middlewares/validation';
 import {
   createCourseBodySchema,
   updateCourseBodySchema,
-  courseIdParamSchema
+  courseIdParamSchema,
+  courseSubjectsParamSchema
 } from '../utils/schemas';
 
 const router = Router();
@@ -23,5 +24,6 @@ router.delete('/:id', validateParams(courseIdParamSchema), CourseController.dele
 // Additional routes
 router.get('/:id/semesters', validateParams(courseIdParamSchema), CourseController.getSemesters);
 router.get('/:id/students', validateParams(courseIdParamSchema), CourseController.getStudents);
+router.get('/:id/:semesterId/subjects', validateParams(courseSubjectsParamSchema), CourseController.getSubjects);
 
 export default router;

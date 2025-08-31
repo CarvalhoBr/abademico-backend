@@ -45,17 +45,20 @@ export const courseIdParamSchema = Joi.object({
   id: uuidSchema
 });
 
+export const courseSubjectsParamSchema = Joi.object({
+  id: uuidSchema,
+  semesterId: uuidSchema
+});
+
 // Semester schemas
 export const createSemesterBodySchema = Joi.object({
   code: Joi.string().pattern(/^\d{4}-\d{2}$/).required(),
-  courseId: Joi.string().uuid().required(),
   startDate: Joi.date().iso().required(),
   endDate: Joi.date().iso().min(Joi.ref('startDate')).required()
 });
 
 export const updateSemesterBodySchema = Joi.object({
   code: Joi.string().pattern(/^\d{4}-\d{2}$/).optional(),
-  courseId: Joi.string().uuid().optional(),
   startDate: Joi.date().iso().optional(),
   endDate: Joi.date().iso().optional()
 }).custom((value, helpers) => {
@@ -74,6 +77,7 @@ export const createSubjectBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   code: Joi.string().min(2).max(20).alphanum().required(),
   credits: Joi.number().integer().min(1).max(10).required(),
+  courseId: Joi.string().uuid().required(),
   semesterId: Joi.string().uuid().required(),
   teacherId: Joi.string().uuid().optional()
 });
@@ -82,6 +86,7 @@ export const updateSubjectBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).optional(),
   code: Joi.string().min(2).max(20).alphanum().optional(),
   credits: Joi.number().integer().min(1).max(10).optional(),
+  courseId: Joi.string().uuid().optional(),
   semesterId: Joi.string().uuid().optional(),
   teacherId: Joi.string().uuid().allow(null).optional()
 });

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CourseModel } from '../models/Course';
 import { UserModel } from '../models/User';
 import { SemesterModel } from '../models/Semester';
+import { SubjectModel } from '../models/Subject';
 import { ResponseUtil } from '../utils/response';
 import { createCourseSchema, updateCourseSchema } from '../utils/validation';
 
@@ -174,6 +175,32 @@ export class CourseController {
       return ResponseUtil.success(res, students, 'Course students retrieved successfully');
     } catch (error: any) {
       console.error('Error fetching course students:', error);
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
+
+  static async getSubjects(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id, semesterId } = req.params;
+
+      // Validate course exists
+      const courseExists = await CourseModel.exists(id!);
+      if (!courseExists) {
+        return ResponseUtil.notFound(res, 'Course');
+      }
+
+      // Validate semester exists
+      const semesterExists = await SemesterModel.exists(semesterId!);
+      if (!semesterExists) {
+        return ResponseUtil.notFound(res, 'Semester');
+      }
+
+      // Get subjects with details for the specific course and semester
+      const subjects = await SubjectModel.findByCourseAndSemesterWithDetails(id!, semesterId!);
+
+      return ResponseUtil.success(res, subjects, 'Course subjects retrieved successfully');
+    } catch (error: any) {
+      console.error('Error fetching course subjects:', error);
       return ResponseUtil.internalError(res, error.message);
     }
   }

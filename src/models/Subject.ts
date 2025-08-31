@@ -41,6 +41,26 @@ export class SubjectModel {
       .orderBy('name');
   }
 
+  static async findByCourseAndSemesterWithDetails(courseId: string, semesterId: string): Promise<any[]> {
+    return await db('subjects')
+      .leftJoin('users', 'subjects.teacher_id', 'users.id')
+      .join('semesters', 'subjects.semester_id', 'semesters.id')
+      .join('courses', 'subjects.course_id', 'courses.id')
+      .where({ 
+        'subjects.course_id': courseId,
+        'subjects.semester_id': semesterId 
+      })
+      .select(
+        'subjects.*',
+        'users.name as teacher_name',
+        'users.email as teacher_email',
+        'semesters.code as semester_code',
+        'courses.name as course_name',
+        'courses.code as course_code'
+      )
+      .orderBy('subjects.name');
+  }
+
   static async findWithDetails(): Promise<any[]> {
     return await db('subjects')
       .leftJoin('users', 'subjects.teacher_id', 'users.id')
