@@ -41,22 +41,19 @@ export class UserController {
         return ResponseUtil.conflict(res, 'Email already exists');
       }
 
-      // Validate courseId for students
-      if (userData.role === 'student' && !userData.courseId) {
-        return ResponseUtil.badRequest(res, 'Course ID is required for students');
+      // Validate courseIds for students
+      if (userData.role === 'student' && (!userData.courseIds || userData.courseIds.length === 0)) {
+        return ResponseUtil.badRequest(res, 'Course IDs are required for students');
       }
 
-      // Validate courseId exists if provided
-      if (userData.courseId) {
-        const courseExists = await CourseModel.exists(userData.courseId);
-        if (!courseExists) {
-          return ResponseUtil.badRequest(res, 'Course not found');
+      // Validate courseIds exist if provided
+      if (userData.courseIds && userData.courseIds.length > 0) {
+        for (const courseId of userData.courseIds) {
+          const courseExists = await CourseModel.exists(courseId);
+          if (!courseExists) {
+            return ResponseUtil.badRequest(res, `Course with ID ${courseId} not found`);
+          }
         }
-      }
-
-      // Validate that only students have courseId
-      if (userData.role !== 'student' && userData.courseId) {
-        return ResponseUtil.badRequest(res, 'Only students can be assigned to courses');
       }
 
       const user = await UserModel.create(userData);
@@ -87,21 +84,20 @@ export class UserController {
         }
       }
 
-      // Validate courseId exists if provided
-      if (updateData.courseId) {
-        const courseExists = await CourseModel.exists(updateData.courseId);
-        if (!courseExists) {
-          return ResponseUtil.badRequest(res, 'Course not found');
+      // Validate courseIds exist if provided
+      if (updateData.courseIds && updateData.courseIds.length > 0) {
+        for (const courseId of updateData.courseIds) {
+          const courseExists = await CourseModel.exists(courseId);
+          if (!courseExists) {
+            return ResponseUtil.badRequest(res, `Course with ID ${courseId} not found`);
+          }
         }
       }
 
-      // Validate role and courseId relationship
+      // Validate role and courseIds relationship
       const finalRole = updateData.role || existingUser.role;
-      if (finalRole === 'student' && updateData.courseId === null) {
-        return ResponseUtil.badRequest(res, 'Students must be assigned to a course');
-      }
-      if (finalRole !== 'student' && updateData.courseId) {
-        return ResponseUtil.badRequest(res, 'Only students can be assigned to courses');
+      if (finalRole === 'student' && (!updateData.courseIds || updateData.courseIds.length === 0)) {
+        return ResponseUtil.badRequest(res, 'Students must be assigned to at least one course');
       }
 
       const user = await UserModel.update(id!, updateData);

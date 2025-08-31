@@ -35,6 +35,7 @@ docker compose exec app npm run seed
 2. `Create Course` - Criar novo curso
 3. `Get Course Semesters` - Ver semestres do curso
 4. `Get Course Students` - Ver estudantes do curso
+5. `Get Course Teachers` - Ver professores do curso
 
 #### **👥 Passo 2: Users**
 1. `Get All Users` - Ver usuários existentes (seeds)
@@ -79,7 +80,7 @@ POST /api/users/student
 {
   "name": "João Silva",
   "email": "joao.silva@student.com",
-  "courseId": "550e8400-e29b-41d4-a716-446655440001"
+  "courseIds": ["550e8400-e29b-41d4-a716-446655440001"]
 }
 ```
 
@@ -107,7 +108,7 @@ POST /api/semesters
 
 ### **Criar Disciplina**
 ```json
-POST /api/subjects
+POST /api/courses/{{courseId}}/subjects
 {
   "name": "Programação Web Avançada",
   "code": "PWA001",

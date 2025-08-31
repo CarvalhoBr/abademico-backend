@@ -3,8 +3,9 @@ import { CourseModel } from '../models/Course';
 import { UserModel } from '../models/User';
 import { SemesterModel } from '../models/Semester';
 import { SubjectModel } from '../models/Subject';
+import { UserCourseModel } from '../models/UserCourse';
 import { ResponseUtil } from '../utils/response';
-import { createCourseSchema, updateCourseSchema } from '../utils/validation';
+import { createCourseSchema, updateCourseSchema, createSubjectInCourseSchema } from '../utils/validation';
 
 export class CourseController {
   static async getAll(req: Request, res: Response): Promise<Response> {
@@ -179,6 +180,23 @@ export class CourseController {
     }
   }
 
+  static async getTeachers(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id } = req.params;
+
+      const courseExists = await CourseModel.exists(id!);
+      if (!courseExists) {
+        return ResponseUtil.notFound(res, 'Course');
+      }
+
+      const teachers = await CourseModel.getTeachers(id!);
+      return ResponseUtil.success(res, teachers, 'Course teachers retrieved successfully');
+    } catch (error: any) {
+      console.error('Error fetching course teachers:', error);
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
+
   static async getSubjects(req: Request, res: Response): Promise<Response> {
     try {
       const { id, semesterId } = req.params;
@@ -201,6 +219,65 @@ export class CourseController {
       return ResponseUtil.success(res, subjects, 'Course subjects retrieved successfully');
     } catch (error: any) {
       console.error('Error fetching course subjects:', error);
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
+
+  static async createSubject(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id: courseId } = req.params;
+
+      // Validate input
+      const { error, value } = createSubjectInCourseSchema.validate(req.body);
+      if (error) {
+        return ResponseUtil.validationError(res, error.details);
+      }
+
+      // Validate course exists
+      const courseExists = await CourseModel.exists(courseId!);
+      if (!courseExists) {
+        return ResponseUtil.notFound(res, 'Course');
+      }
+
+      // Validate semester exists
+      const semesterExists = await SemesterModel.exists(value.semesterId);
+      if (!semesterExists) {
+        return ResponseUtil.badRequest(res, 'Semester not found');
+      }
+
+      // Check if subject code already exists in the course and semester
+      const codeExists = await SubjectModel.codeExistsInCourseAndSemester(value.code, courseId!, value.semesterId);
+      if (codeExists) {
+        return ResponseUtil.conflict(res, 'Subject code already exists in this course and semester');
+      }
+
+              // Validate teacher exists and has correct role
+        if (value.teacherId) {
+          const teacher = await UserModel.findById(value.teacherId);
+          if (!teacher) {
+            return ResponseUtil.badRequest(res, 'Teacher not found');
+          }
+          if (teacher.role !== 'teacher') {
+            return ResponseUtil.badRequest(res, 'User must have teacher role');
+          }
+
+          // Validate that teacher is assigned to this course
+          const teacherInCourse = await UserCourseModel.exists(value.teacherId, courseId!);
+          if (!teacherInCourse) {
+            return ResponseUtil.badRequest(res, 'Teacher must be assigned to this course');
+          }
+        }
+
+      // Create subject with courseId from URL params
+      const subjectData = {
+        ...value,
+        courseId: courseId!
+      };
+
+      const subject = await SubjectModel.create(subjectData);
+      return ResponseUtil.created(res, subject, 'Subject created successfully');
+    } catch (error: any) {
+      console.error('Error creating subject:', error);
       return ResponseUtil.internalError(res, error.message);
     }
   }

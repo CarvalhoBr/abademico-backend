@@ -23,7 +23,6 @@ Sistema acadêmico desenvolvido para demonstrar implementação de RBAC (Role-Ba
   "name": "string",
   "email": "string (unique)",
   "role": "enum [student, teacher, coordinator, admin]",
-  "courseId": "uuid (nullable para admin)",
   "createdAt": "timestamp",
   "updatedAt": "timestamp"
 }
@@ -31,8 +30,8 @@ Sistema acadêmico desenvolvido para demonstrar implementação de RBAC (Role-Ba
 
 **Regras de Negócio:**
 - Email deve ser único no sistema
-- Apenas admins podem ter `courseId` nulo
 - Role define o tipo de usuário no sistema
+- Relacionamento com cursos é N:N através da tabela `user_courses`
 
 ### 3.2 Curso (Course)
 ```json
@@ -132,6 +131,9 @@ Sistema acadêmico desenvolvido para demonstrar implementação de RBAC (Role-Ba
 **Funcionalidades Adicionais:**
 - `GET /courses/:id/semesters` - Listar semestres do curso
 - `GET /courses/:id/students` - Listar estudantes do curso
+- `GET /courses/:id/teachers` - Listar professores do curso
+- `POST /courses/:id/subjects` - Criar disciplina no curso
+- `GET /courses/:id/:semesterId/subjects` - Listar disciplinas do curso por semestre
 
 ### 4.3 Semestres
 **Endpoints:**
@@ -146,7 +148,6 @@ Sistema acadêmico desenvolvido para demonstrar implementação de RBAC (Role-Ba
 
 ### 4.4 Disciplinas
 **Endpoints:**
-- `POST /subjects` - Criar disciplina
 - `GET /subjects` - Listar todas as disciplinas
 - `GET /subjects/:id` - Obter disciplina por ID
 - `PUT /subjects/:id` - Atualizar disciplina
@@ -168,8 +169,7 @@ Sistema acadêmico desenvolvido para demonstrar implementação de RBAC (Role-Ba
 ## 5. Estrutura do Banco de Dados
 
 ### 5.1 Relacionamentos
-- **User** 1:N **Course** (coordenador)
-- **Course** 1:N **User** (estudantes)
+- **User** N:N **Course** (através de user_courses)
 - **Course** 1:N **Semester**
 - **Semester** 1:N **Subject**
 - **User** (teacher) 1:N **Subject**
@@ -286,7 +286,7 @@ KEYCLOAK_CLIENT_ID=academic-client
 - Nome: obrigatório, mínimo 2 caracteres
 - Email: obrigatório, formato válido, único
 - Role: obrigatório, valores válidos
-- CourseId: obrigatório apenas para estudantes
+- CourseIds: obrigatório para estudantes (array de UUIDs)
 
 ### 10.2 Cursos
 - Nome: obrigatório, mínimo 2 caracteres

@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { SubjectController } from '../controllers/SubjectController';
 import { validateBody, validateParams } from '../middlewares/validation';
 import {
-  createSubjectBodySchema,
   updateSubjectBodySchema,
   subjectIdParamSchema,
   subjectEnrollParamsSchema,
@@ -12,7 +11,6 @@ import {
 const router = Router();
 
 // CRUD routes
-router.post('/', validateBody(createSubjectBodySchema), SubjectController.create);
 router.get('/', SubjectController.getAll);
 router.get('/:id', validateParams(subjectIdParamSchema), SubjectController.getById);
 router.put('/:id', 

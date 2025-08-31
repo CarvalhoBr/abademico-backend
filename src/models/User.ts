@@ -1,5 +1,6 @@
 import db from '../config/database';
 import { User, CreateUserRequest, UpdateUserRequest } from '../types';
+import { UserCourseModel } from './UserCourse';
 
 export class UserModel {
   static async findAll(): Promise<User[]> {
@@ -26,21 +27,19 @@ export class UserModel {
       .orderBy('created_at', 'desc');
   }
 
-  static async findByCourseId(courseId: string): Promise<User[]> {
-    return await db('users')
-      .where({ course_id: courseId })
-      .orderBy('created_at', 'desc');
-  }
-
   static async create(data: CreateUserRequest): Promise<User> {
     const [user] = await db('users')
       .insert({
         name: data.name,
         email: data.email,
-        role: data.role,
-        course_id: data.courseId || null
+        role: data.role
       })
       .returning('*');
+    
+    // Create user-course relationships if courseIds are provided
+    if (data.courseIds && data.courseIds.length > 0) {
+      await UserCourseModel.createMany(user.id, data.courseIds);
+    }
     
     return user;
   }
@@ -51,7 +50,6 @@ export class UserModel {
     if (data.name !== undefined) updateData.name = data.name;
     if (data.email !== undefined) updateData.email = data.email;
     if (data.role !== undefined) updateData.role = data.role;
-    if (data.courseId !== undefined) updateData.course_id = data.courseId;
     
     updateData.updated_at = new Date();
 
@@ -60,10 +58,24 @@ export class UserModel {
       .update(updateData)
       .returning('*');
     
+    // Update user-course relationships if courseIds are provided
+    if (data.courseIds !== undefined) {
+      // Delete existing relationships
+      await UserCourseModel.deleteByUserId(id);
+      
+      // Create new relationships
+      if (data.courseIds.length > 0) {
+        await UserCourseModel.createMany(id, data.courseIds);
+      }
+    }
+    
     return user;
   }
 
   static async delete(id: string): Promise<boolean> {
+    // Delete user-course relationships first
+    await UserCourseModel.deleteByUserId(id);
+    
     const deletedRows = await db('users')
       .where({ id })
       .del();

@@ -3,7 +3,6 @@ export interface User {
   name: string;
   email: string;
   role: 'student' | 'teacher' | 'coordinator' | 'admin';
-  courseId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,6 +13,14 @@ export interface Course {
   code: string;
   description: string | null;
   coordinatorId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserCourse {
+  id: string;
+  userId: string;
+  courseId: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -70,7 +77,7 @@ export interface CreateUserRequest {
   name: string;
   email: string;
   role: User['role'];
-  courseId?: string;
+  courseIds?: string[];
 }
 
 export interface UpdateUserRequest extends Partial<CreateUserRequest> {}

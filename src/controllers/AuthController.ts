@@ -29,8 +29,7 @@ export class AuthController {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role,
-          courseId: user.courseId
+          role: user.role
         }
       }, 'Login successful');
     } catch (error: any) {
@@ -63,7 +62,6 @@ export class AuthController {
           name: user.name,
           email: user.email,
           role: user.role,
-          courseId: user.courseId,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt
         },

@@ -9,13 +9,13 @@ export const statusSchema = Joi.string().valid('active', 'completed', 'dropped')
 export const createUserBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
-  courseId: Joi.string().uuid().optional()
+  courseIds: Joi.array().items(Joi.string().uuid()).optional()
 });
 
 export const updateUserBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).optional(),
   email: Joi.string().email().optional(),
-  courseId: Joi.string().uuid().allow(null).optional()
+  courseIds: Joi.array().items(Joi.string().uuid()).optional()
 });
 
 export const userRoleParamSchema = Joi.object({
@@ -78,6 +78,14 @@ export const createSubjectBodySchema = Joi.object({
   code: Joi.string().min(2).max(20).alphanum().required(),
   credits: Joi.number().integer().min(1).max(10).required(),
   courseId: Joi.string().uuid().required(),
+  semesterId: Joi.string().uuid().required(),
+  teacherId: Joi.string().uuid().optional()
+});
+
+export const createSubjectInCourseBodySchema = Joi.object({
+  name: Joi.string().min(2).max(100).required(),
+  code: Joi.string().min(2).max(20).alphanum().required(),
+  credits: Joi.number().integer().min(1).max(10).required(),
   semesterId: Joi.string().uuid().required(),
   teacherId: Joi.string().uuid().optional()
 });

@@ -7,6 +7,7 @@ exports.seed = async function(knex) {
   await knex('enrollments').del();
   await knex('subjects').del();
   await knex('semesters').del();
+  await knex('user_courses').del();
   await knex('users').del();
   await knex('courses').del();
 

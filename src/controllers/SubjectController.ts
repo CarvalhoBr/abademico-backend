@@ -4,7 +4,7 @@ import { SemesterModel } from '../models/Semester';
 import { CourseModel } from '../models/Course';
 import { UserModel } from '../models/User';
 import { ResponseUtil } from '../utils/response';
-import { createSubjectSchema, updateSubjectSchema } from '../utils/validation';
+import { updateSubjectSchema } from '../utils/validation';
 
 export class SubjectController {
   static async getAll(req: Request, res: Response): Promise<Response> {
@@ -33,50 +33,7 @@ export class SubjectController {
     }
   }
 
-  static async create(req: Request, res: Response): Promise<Response> {
-    try {
-      // Validate input
-      const { error, value } = createSubjectSchema.validate(req.body);
-      if (error) {
-        return ResponseUtil.validationError(res, error.details);
-      }
 
-      // Validate course exists
-      const courseExists = await CourseModel.exists(value.courseId);
-      if (!courseExists) {
-        return ResponseUtil.badRequest(res, 'Course not found');
-      }
-
-      // Validate semester exists
-      const semesterExists = await SemesterModel.exists(value.semesterId);
-      if (!semesterExists) {
-        return ResponseUtil.badRequest(res, 'Semester not found');
-      }
-
-      // Check if subject code already exists in the course and semester
-      const codeExists = await SubjectModel.codeExistsInCourseAndSemester(value.code, value.courseId, value.semesterId);
-      if (codeExists) {
-        return ResponseUtil.conflict(res, 'Subject code already exists in this course and semester');
-      }
-
-      // Validate teacher exists and has correct role
-      if (value.teacherId) {
-        const teacher = await UserModel.findById(value.teacherId);
-        if (!teacher) {
-          return ResponseUtil.badRequest(res, 'Teacher not found');
-        }
-        if (teacher.role !== 'teacher') {
-          return ResponseUtil.badRequest(res, 'User must have teacher role');
-        }
-      }
-
-      const subject = await SubjectModel.create(value);
-      return ResponseUtil.created(res, subject, 'Subject created successfully');
-    } catch (error: any) {
-      console.error('Error creating subject:', error);
-      return ResponseUtil.internalError(res, error.message);
-    }
-  }
 
   static async update(req: Request, res: Response): Promise<Response> {
     try {

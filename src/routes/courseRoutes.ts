@@ -5,7 +5,8 @@ import {
   createCourseBodySchema,
   updateCourseBodySchema,
   courseIdParamSchema,
-  courseSubjectsParamSchema
+  courseSubjectsParamSchema,
+  createSubjectInCourseBodySchema
 } from '../utils/schemas';
 
 const router = Router();
@@ -24,6 +25,12 @@ router.delete('/:id', validateParams(courseIdParamSchema), CourseController.dele
 // Additional routes
 router.get('/:id/semesters', validateParams(courseIdParamSchema), CourseController.getSemesters);
 router.get('/:id/students', validateParams(courseIdParamSchema), CourseController.getStudents);
+router.get('/:id/teachers', validateParams(courseIdParamSchema), CourseController.getTeachers);
 router.get('/:id/:semesterId/subjects', validateParams(courseSubjectsParamSchema), CourseController.getSubjects);
+router.post('/:id/subjects', 
+  validateParams(courseIdParamSchema),
+  validateBody(createSubjectInCourseBodySchema),
+  CourseController.createSubject
+);
 
 export default router;

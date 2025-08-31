@@ -51,7 +51,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@student.com\",\n  \"courseId\": \"550e8400-e29b-41d4-a716-446655440001\"\n}"
+              "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@student.com\",\n  \"courseIds\": [\"550e8400-e29b-41d4-a716-446655440001\"]\n}"
             },
             "url": {
               "raw": "{{apiUrl}}/users/student",
@@ -281,6 +281,19 @@
           "response": []
         },
         {
+          "name": "Get Course Teachers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/teachers",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "teachers"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Update Course",
           "request": {
             "method": "PUT",
@@ -436,9 +449,9 @@
               "raw": "{\n  \"name\": \"Programação Web Avançada\",\n  \"code\": \"PWA001\",\n  \"credits\": 4,\n  \"semesterId\": \"550e8400-e29b-41d4-a716-446655440050\",\n  \"teacherId\": \"550e8400-e29b-41d4-a716-446655440020\"\n}"
             },
             "url": {
-              "raw": "{{apiUrl}}/subjects",
+              "raw": "{{apiUrl}}/courses/{{courseId}}/subjects",
               "host": ["{{apiUrl}}"],
-              "path": ["subjects"]
+              "path": ["courses", "{{courseId}}", "subjects"]
             }
           },
           "response": []

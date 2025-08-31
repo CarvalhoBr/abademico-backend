@@ -21,7 +21,7 @@ export const getResourcesByRole = (role: string): Resource[] => {
       {
         name: 'courses',
         label: 'Cursos',
-        actions: ['create', 'read', 'update', 'delete']
+        actions: ['create', 'read', 'update', 'delete', 'createSubject', 'updateSubject']
       },
       {
         name: 'semesters',
@@ -31,7 +31,7 @@ export const getResourcesByRole = (role: string): Resource[] => {
       {
         name: 'subjects',
         label: 'Disciplinas',
-        actions: ['create', 'read', 'update', 'delete']
+        actions: ['read', 'update', 'delete']
       },
       {
         name: 'enrollments',
@@ -53,7 +53,7 @@ export const getResourcesByRole = (role: string): Resource[] => {
       {
         name: 'courses',
         label: 'Cursos',
-        actions: ['read', 'update']
+        actions: ['read', 'update', 'createSubject', 'updateSubject']
       },
       {
         name: 'semesters',
@@ -63,7 +63,7 @@ export const getResourcesByRole = (role: string): Resource[] => {
       {
         name: 'subjects',
         label: 'Disciplinas',
-        actions: ['create', 'read', 'update', 'delete']
+        actions: ['read', 'update', 'delete']
       },
       {
         name: 'enrollments',

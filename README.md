@@ -89,8 +89,7 @@ npm run dev
 
 ### Relacionamentos
 
-- User 1:N Course (coordenador)
-- Course 1:N User (estudantes)
+- User N:N Course (através de user_courses)
 - Course 1:N Semester
 - Semester 1:N Subject
 - User (teacher) 1:N Subject
@@ -116,6 +115,9 @@ npm run dev
 - `DELETE /api/courses/:id` - Remover curso
 - `GET /api/courses/:id/semesters` - Listar semestres do curso
 - `GET /api/courses/:id/students` - Listar estudantes do curso
+- `GET /api/courses/:id/teachers` - Listar professores do curso
+- `POST /api/courses/:id/subjects` - Criar disciplina no curso
+- `GET /api/courses/:id/:semesterId/subjects` - Listar disciplinas do curso por semestre
 
 ### Semestres
 - `POST /api/semesters` - Criar semestre
@@ -126,7 +128,6 @@ npm run dev
 - `GET /api/semesters/:id/subjects` - Listar disciplinas do semestre
 
 ### Disciplinas
-- `POST /api/subjects` - Criar disciplina
 - `GET /api/subjects` - Listar disciplinas
 - `GET /api/subjects/:id` - Obter disciplina por ID
 - `PUT /api/subjects/:id` - Atualizar disciplina

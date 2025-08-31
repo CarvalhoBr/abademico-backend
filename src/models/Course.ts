@@ -1,5 +1,6 @@
 import db from '../config/database';
 import { Course, CreateCourseRequest, UpdateCourseRequest } from '../types';
+import { UserCourseModel } from './UserCourse';
 
 export class CourseModel {
   static async findAll(): Promise<Course[]> {
@@ -63,6 +64,9 @@ export class CourseModel {
   }
 
   static async delete(id: string): Promise<boolean> {
+    // Delete user-course relationships first
+    await UserCourseModel.deleteByCourseId(id);
+    
     const deletedRows = await db('courses')
       .where({ id })
       .del();
@@ -91,10 +95,23 @@ export class CourseModel {
 
   static async getStudents(courseId: string): Promise<any[]> {
     return await db('users')
+      .join('user_courses', 'users.id', 'user_courses.user_id')
       .where({ 
-        course_id: courseId,
-        role: 'student'
+        'user_courses.course_id': courseId,
+        'users.role': 'student'
       })
-      .orderBy('name');
+      .select('users.*')
+      .orderBy('users.name');
+  }
+
+  static async getTeachers(courseId: string): Promise<any[]> {
+    return await db('users')
+      .join('user_courses', 'users.id', 'user_courses.user_id')
+      .where({ 
+        'user_courses.course_id': courseId,
+        'users.role': 'teacher'
+      })
+      .select('users.*')
+      .orderBy('users.name');
   }
 }

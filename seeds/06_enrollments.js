@@ -3,10 +3,16 @@
  * @returns { Promise<void> } 
  */
 exports.seed = async function(knex) {
-  // Get students and subjects from their courses
-  const students = await knex('users').where('role', 'student').select('id', 'course_id');
+  // Get students and their course relationships
+  const students = await knex('users').where('role', 'student').select('id');
   
-  // Subjects now have course_id directly
+  // Get user-course relationships for students
+  const userCourses = await knex('user_courses')
+    .join('users', 'user_courses.user_id', 'users.id')
+    .where('users.role', 'student')
+    .select('user_courses.user_id', 'user_courses.course_id');
+  
+  // Get all subjects with their course information
   const subjects = await knex('subjects').select('id as subject_id', 'course_id');
 
   const enrollments = [];
@@ -14,8 +20,13 @@ exports.seed = async function(knex) {
 
   // Create enrollments for each student
   students.forEach(student => {
-    // Get subjects from student's course
-    const studentSubjects = subjects.filter(s => s.course_id === student.course_id);
+    // Get courses that this student is enrolled in
+    const studentCourses = userCourses.filter(uc => uc.user_id === student.id);
+    
+    // Get subjects from all courses the student is enrolled in
+    const studentSubjects = subjects.filter(subject => 
+      studentCourses.some(sc => sc.course_id === subject.course_id)
+    );
     
     // Enroll student in 60-80% of available subjects randomly
     const enrollmentCount = Math.floor(studentSubjects.length * (0.6 + Math.random() * 0.2));

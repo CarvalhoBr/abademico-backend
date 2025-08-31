@@ -5,14 +5,14 @@ export const createUserSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
   role: Joi.string().valid('student', 'teacher', 'coordinator', 'admin').required(),
-  courseId: Joi.string().uuid().optional()
+  courseIds: Joi.array().items(Joi.string().uuid()).optional()
 });
 
 export const updateUserSchema = Joi.object({
   name: Joi.string().min(2).max(100).optional(),
   email: Joi.string().email().optional(),
   role: Joi.string().valid('student', 'teacher', 'coordinator', 'admin').optional(),
-  courseId: Joi.string().uuid().allow(null).optional()
+  courseIds: Joi.array().items(Joi.string().uuid()).optional()
 });
 
 // Course validation schemas
@@ -54,6 +54,14 @@ export const createSubjectSchema = Joi.object({
   code: Joi.string().min(2).max(20).alphanum().required(),
   credits: Joi.number().integer().min(1).max(10).required(),
   courseId: Joi.string().uuid().required(),
+  semesterId: Joi.string().uuid().required(),
+  teacherId: Joi.string().uuid().optional()
+});
+
+export const createSubjectInCourseSchema = Joi.object({
+  name: Joi.string().min(2).max(100).required(),
+  code: Joi.string().min(2).max(20).alphanum().required(),
+  credits: Joi.number().integer().min(1).max(10).required(),
   semesterId: Joi.string().uuid().required(),
   teacherId: Joi.string().uuid().optional()
 });
