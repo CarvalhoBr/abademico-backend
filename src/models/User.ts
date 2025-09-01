@@ -1,30 +1,35 @@
 import db from '../config/database';
-import { User, CreateUserRequest, UpdateUserRequest } from '../types';
+import { CreateUserRequest, UpdateUserRequest } from '../types';
+import { User } from '../entities';
 import { UserCourseModel } from './UserCourse';
 
 export class UserModel {
   static async findAll(): Promise<User[]> {
-    return await db('users')
+    const results = await db('users')
       .select('*')
       .orderBy('created_at', 'desc');
+    return User.fromArray(results);
   }
 
   static async findById(id: string): Promise<User | undefined> {
-    return await db('users')
+    const result = await db('users')
       .where({ id })
       .first();
+    return result ? new User(result) : undefined;
   }
 
   static async findByEmail(email: string): Promise<User | undefined> {
-    return await db('users')
+    const result = await db('users')
       .where({ email })
       .first();
+    return result ? new User(result) : undefined;
   }
 
-  static async findByRole(role: User['role']): Promise<User[]> {
-    return await db('users')
+  static async findByRole(role: 'student' | 'teacher' | 'coordinator' | 'admin'): Promise<User[]> {
+    const results = await db('users')
       .where({ role })
       .orderBy('created_at', 'desc');
+    return User.fromArray(results);
   }
 
   static async getCourses(userId: string): Promise<any[]> {
@@ -63,13 +68,15 @@ export class UserModel {
   }
 
   static async create(data: CreateUserRequest): Promise<User> {
-    const [user] = await db('users')
+    const [result] = await db('users')
       .insert({
         name: data.name,
         email: data.email,
         role: data.role
       })
       .returning('*');
+    
+    const user = new User(result);
     
     // Create user-course relationships if courseIds are provided
     if (data.courseIds && data.courseIds.length > 0) {
@@ -88,7 +95,7 @@ export class UserModel {
     
     updateData.updated_at = new Date();
 
-    const [user] = await db('users')
+    const [result] = await db('users')
       .where({ id })
       .update(updateData)
       .returning('*');
@@ -104,7 +111,7 @@ export class UserModel {
       }
     }
     
-    return user;
+    return result ? new User(result) : undefined;
   }
 
   static async delete(id: string): Promise<boolean> {

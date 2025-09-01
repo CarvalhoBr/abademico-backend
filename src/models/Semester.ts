@@ -1,21 +1,24 @@
 import db from '../config/database';
-import { Semester, CreateSemesterRequest, UpdateSemesterRequest } from '../types';
+import { CreateSemesterRequest, UpdateSemesterRequest } from '../types';
+import { Semester } from '../entities';
 
 export class SemesterModel {
   static async findAll(): Promise<Semester[]> {
-    return await db('semesters')
+    const results = await db('semesters')
       .select('*')
       .orderBy('start_date', 'desc');
+    return Semester.fromArray(results);
   }
 
   static async findById(id: string): Promise<Semester | undefined> {
-    return await db('semesters')
+    const result = await db('semesters')
       .where({ id })
       .first();
+    return result ? new Semester(result) : undefined;
   }
 
   static async create(data: CreateSemesterRequest): Promise<Semester> {
-    const [semester] = await db('semesters')
+    const [result] = await db('semesters')
       .insert({
         code: data.code,
         start_date: data.startDate,
@@ -23,7 +26,7 @@ export class SemesterModel {
       })
       .returning('*');
     
-    return semester;
+    return new Semester(result);
   }
 
   static async update(id: string, data: UpdateSemesterRequest): Promise<Semester | undefined> {
@@ -35,12 +38,12 @@ export class SemesterModel {
     
     updateData.updated_at = new Date();
 
-    const [semester] = await db('semesters')
+    const [result] = await db('semesters')
       .where({ id })
       .update(updateData)
       .returning('*');
     
-    return semester;
+    return result ? new Semester(result) : undefined;
   }
 
   static async delete(id: string): Promise<boolean> {

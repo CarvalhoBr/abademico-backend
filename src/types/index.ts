@@ -1,60 +1,14 @@
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'student' | 'teacher' | 'coordinator' | 'admin';
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Entity classes are now imported from ../entities
+// These interfaces have been replaced by classes that handle field mapping automatically
+import { User as UserEntity } from '../entities/User';
+import { Enrollment as EnrollmentEntity } from '../entities/Enrollment';
 
-export interface Course {
-  id: string;
-  name: string;
-  code: string;
-  description: string | null;
-  coordinatorId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserCourse {
-  id: string;
-  userId: string;
-  courseId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Semester {
-  id: string;
-  code: string;
-  startDate: Date;
-  endDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Subject {
-  id: string;
-  name: string;
-  code: string;
-  credits: number;
-  courseId: string;
-  semesterId: string;
-  teacherId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Enrollment {
-  id: string;
-  studentId: string;
-  subjectId: string;
-  enrollmentDate: Date;
-  status: 'active' | 'completed' | 'dropped';
-  createdAt: Date;
-  updatedAt: Date;
-}
+export { User } from '../entities/User';
+export { Course } from '../entities/Course';
+export { UserCourse } from '../entities/UserCourse';
+export { Semester } from '../entities/Semester';
+export { Subject } from '../entities/Subject';
+export { Enrollment } from '../entities/Enrollment';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -76,7 +30,7 @@ export interface ApiResponse<T = any> {
 export interface CreateUserRequest {
   name: string;
   email: string;
-  role: User['role'];
+  role: UserEntity['role'];
   courseIds?: string[];
 }
 
@@ -113,7 +67,7 @@ export interface UpdateSubjectRequest extends Partial<CreateSubjectRequest> {}
 export interface CreateEnrollmentRequest {
   studentId: string;
   subjectId: string;
-  status?: Enrollment['status'];
+  status?: EnrollmentEntity['status'];
 }
 
 export interface UpdateEnrollmentRequest extends Partial<CreateEnrollmentRequest> {}

@@ -1,16 +1,16 @@
 import db from '../config/database';
-import { UserCourse } from '../types';
+import { UserCourse } from '../entities';
 
 export class UserCourseModel {
   static async create(userId: string, courseId: string): Promise<UserCourse> {
-    const [userCourse] = await db('user_courses')
+    const [result] = await db('user_courses')
       .insert({
         user_id: userId,
         course_id: courseId
       })
       .returning('*');
     
-    return userCourse;
+    return new UserCourse(result);
   }
 
   static async createMany(userId: string, courseIds: string[]): Promise<UserCourse[]> {
@@ -19,30 +19,35 @@ export class UserCourseModel {
       course_id: courseId
     }));
 
-    return await db('user_courses')
+    const results = await db('user_courses')
       .insert(userCourses)
       .returning('*');
+    
+    return UserCourse.fromArray(results);
   }
 
   static async findByUserId(userId: string): Promise<UserCourse[]> {
-    return await db('user_courses')
+    const results = await db('user_courses')
       .where({ user_id: userId })
       .orderBy('created_at', 'desc');
+    return UserCourse.fromArray(results);
   }
 
   static async findByCourseId(courseId: string): Promise<UserCourse[]> {
-    return await db('user_courses')
+    const results = await db('user_courses')
       .where({ course_id: courseId })
       .orderBy('created_at', 'desc');
+    return UserCourse.fromArray(results);
   }
 
   static async findByUserAndCourse(userId: string, courseId: string): Promise<UserCourse | undefined> {
-    return await db('user_courses')
+    const result = await db('user_courses')
       .where({ 
         user_id: userId,
         course_id: courseId
       })
       .first();
+    return result ? new UserCourse(result) : undefined;
   }
 
   static async deleteByUserAndCourse(userId: string, courseId: string): Promise<boolean> {

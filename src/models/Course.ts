@@ -1,24 +1,28 @@
 import db from '../config/database';
-import { Course, CreateCourseRequest, UpdateCourseRequest } from '../types';
+import { CreateCourseRequest, UpdateCourseRequest } from '../types';
+import { Course } from '../entities';
 import { UserCourseModel } from './UserCourse';
 
 export class CourseModel {
   static async findAll(): Promise<Course[]> {
-    return await db('courses')
+    const results = await db('courses')
       .select('*')
       .orderBy('created_at', 'desc');
+    return Course.fromArray(results);
   }
 
   static async findById(id: string): Promise<Course | undefined> {
-    return await db('courses')
+    const result = await db('courses')
       .where({ id })
       .first();
+    return result ? new Course(result) : undefined;
   }
 
   static async findByCode(code: string): Promise<Course | undefined> {
-    return await db('courses')
+    const result = await db('courses')
       .where({ code })
       .first();
+    return result ? new Course(result) : undefined;
   }
 
   static async findWithCoordinator(): Promise<any[]> {
@@ -33,7 +37,7 @@ export class CourseModel {
   }
 
   static async create(data: CreateCourseRequest): Promise<Course> {
-    const [course] = await db('courses')
+    const [result] = await db('courses')
       .insert({
         name: data.name,
         code: data.code,
@@ -42,7 +46,7 @@ export class CourseModel {
       })
       .returning('*');
     
-    return course;
+    return new Course(result);
   }
 
   static async update(id: string, data: UpdateCourseRequest): Promise<Course | undefined> {
@@ -55,12 +59,12 @@ export class CourseModel {
     
     updateData.updated_at = new Date();
 
-    const [course] = await db('courses')
+    const [result] = await db('courses')
       .where({ id })
       .update(updateData)
       .returning('*');
     
-    return course;
+    return result ? new Course(result) : undefined;
   }
 
   static async delete(id: string): Promise<boolean> {

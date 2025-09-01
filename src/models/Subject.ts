@@ -1,44 +1,51 @@
 import db from '../config/database';
-import { Subject, CreateSubjectRequest, UpdateSubjectRequest } from '../types';
+import { CreateSubjectRequest, UpdateSubjectRequest } from '../types';
+import { Subject } from '../entities';
 
 export class SubjectModel {
   static async findAll(): Promise<Subject[]> {
-    return await db('subjects')
+    const results = await db('subjects')
       .select('*')
       .orderBy('created_at', 'desc');
+    return Subject.fromArray(results);
   }
 
   static async findById(id: string): Promise<Subject | undefined> {
-    return await db('subjects')
+    const result = await db('subjects')
       .where({ id })
       .first();
+    return result ? new Subject(result) : undefined;
   }
 
   static async findBySemesterId(semesterId: string): Promise<Subject[]> {
-    return await db('subjects')
+    const results = await db('subjects')
       .where({ semester_id: semesterId })
       .orderBy('name');
+    return Subject.fromArray(results);
   }
 
   static async findByTeacherId(teacherId: string): Promise<Subject[]> {
-    return await db('subjects')
+    const results = await db('subjects')
       .where({ teacher_id: teacherId })
       .orderBy('name');
+    return Subject.fromArray(results);
   }
 
   static async findByCourseId(courseId: string): Promise<Subject[]> {
-    return await db('subjects')
+    const results = await db('subjects')
       .where({ course_id: courseId })
       .orderBy('name');
+    return Subject.fromArray(results);
   }
 
   static async findByCourseAndSemester(courseId: string, semesterId: string): Promise<Subject[]> {
-    return await db('subjects')
+    const results = await db('subjects')
       .where({ 
         course_id: courseId,
         semester_id: semesterId 
       })
       .orderBy('name');
+    return Subject.fromArray(results);
   }
 
   static async findByCourseAndSemesterWithDetails(courseId: string, semesterId: string): Promise<any[]> {
@@ -78,7 +85,7 @@ export class SubjectModel {
   }
 
   static async create(data: CreateSubjectRequest): Promise<Subject> {
-    const [subject] = await db('subjects')
+    const [result] = await db('subjects')
       .insert({
         name: data.name,
         code: data.code,
@@ -89,7 +96,7 @@ export class SubjectModel {
       })
       .returning('*');
     
-    return subject;
+    return new Subject(result);
   }
 
   static async update(id: string, data: UpdateSubjectRequest): Promise<Subject | undefined> {
@@ -104,12 +111,12 @@ export class SubjectModel {
     
     updateData.updated_at = new Date();
 
-    const [subject] = await db('subjects')
+    const [result] = await db('subjects')
       .where({ id })
       .update(updateData)
       .returning('*');
     
-    return subject;
+    return result ? new Subject(result) : undefined;
   }
 
   static async delete(id: string): Promise<boolean> {
@@ -157,7 +164,7 @@ export class SubjectModel {
   }
 
   static async enrollStudent(subjectId: string, studentId: string): Promise<any> {
-    const [enrollment] = await db('enrollments')
+    const [result] = await db('enrollments')
       .insert({
         subject_id: subjectId,
         student_id: studentId,
@@ -165,7 +172,7 @@ export class SubjectModel {
       })
       .returning('*');
     
-    return enrollment;
+    return result;
   }
 
   static async unenrollStudent(subjectId: string, studentId: string): Promise<boolean> {

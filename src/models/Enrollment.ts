@@ -1,29 +1,34 @@
 import db from '../config/database';
-import { Enrollment, CreateEnrollmentRequest, UpdateEnrollmentRequest } from '../types';
+import { CreateEnrollmentRequest, UpdateEnrollmentRequest } from '../types';
+import { Enrollment } from '../entities';
 
 export class EnrollmentModel {
   static async findAll(): Promise<Enrollment[]> {
-    return await db('enrollments')
+    const results = await db('enrollments')
       .select('*')
       .orderBy('enrollment_date', 'desc');
+    return Enrollment.fromArray(results);
   }
 
   static async findById(id: string): Promise<Enrollment | undefined> {
-    return await db('enrollments')
+    const result = await db('enrollments')
       .where({ id })
       .first();
+    return result ? new Enrollment(result) : undefined;
   }
 
   static async findByStudentId(studentId: string): Promise<Enrollment[]> {
-    return await db('enrollments')
+    const results = await db('enrollments')
       .where({ student_id: studentId })
       .orderBy('enrollment_date', 'desc');
+    return Enrollment.fromArray(results);
   }
 
   static async findBySubjectId(subjectId: string): Promise<Enrollment[]> {
-    return await db('enrollments')
+    const results = await db('enrollments')
       .where({ subject_id: subjectId })
       .orderBy('enrollment_date', 'desc');
+    return Enrollment.fromArray(results);
   }
 
   static async findWithDetails(): Promise<any[]> {
@@ -46,14 +51,15 @@ export class EnrollmentModel {
       .orderBy('enrollments.enrollment_date', 'desc');
   }
 
-  static async findByStatus(status: Enrollment['status']): Promise<Enrollment[]> {
-    return await db('enrollments')
+  static async findByStatus(status: 'active' | 'completed' | 'dropped'): Promise<Enrollment[]> {
+    const results = await db('enrollments')
       .where({ status })
       .orderBy('enrollment_date', 'desc');
+    return Enrollment.fromArray(results);
   }
 
   static async create(data: CreateEnrollmentRequest): Promise<Enrollment> {
-    const [enrollment] = await db('enrollments')
+    const [result] = await db('enrollments')
       .insert({
         student_id: data.studentId,
         subject_id: data.subjectId,
@@ -61,7 +67,7 @@ export class EnrollmentModel {
       })
       .returning('*');
     
-    return enrollment;
+    return new Enrollment(result);
   }
 
   static async update(id: string, data: UpdateEnrollmentRequest): Promise<Enrollment | undefined> {
@@ -73,12 +79,12 @@ export class EnrollmentModel {
     
     updateData.updated_at = new Date();
 
-    const [enrollment] = await db('enrollments')
+    const [result] = await db('enrollments')
       .where({ id })
       .update(updateData)
       .returning('*');
     
-    return enrollment;
+    return result ? new Enrollment(result) : undefined;
   }
 
   static async delete(id: string): Promise<boolean> {
@@ -123,7 +129,7 @@ export class EnrollmentModel {
       .orderBy('enrollments.enrollment_date', 'desc');
   }
 
-  static async getTotalCreditsForStudent(studentId: string, semesterId: string, status: Enrollment['status'] = 'active'): Promise<number> {
+  static async getTotalCreditsForStudent(studentId: string, semesterId: string, status: 'active' | 'completed' | 'dropped' = 'active'): Promise<number> {
     const result = await db('enrollments')
       .join('subjects', 'enrollments.subject_id', 'subjects.id')
       .where({
