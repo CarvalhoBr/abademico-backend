@@ -200,6 +200,55 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get User Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}/courses",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}", "courses"]
+            }
+          },
+          "response": []
+        },
+
+        {
+          "name": "Add Course to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": \"{{courseId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}/courses",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}", "courses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Course from User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}/courses/{{courseId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}", "courses", "{{courseId}}"]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -526,6 +575,32 @@
               "raw": "{{apiUrl}}/subjects/{{subjectId}}/enrollments/{{studentId}}",
               "host": ["{{apiUrl}}"],
               "path": ["subjects", "{{subjectId}}", "enrollments", "{{studentId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enroll Student in Course Subject",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/subjects/{{subjectId}}/enroll/{{userId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "subjects", "{{subjectId}}", "enroll", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unenroll Student from Course Subject",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/subjects/{{subjectId}}/enrollment/{{userId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "subjects", "{{subjectId}}", "enrollment", "{{userId}}"]
             }
           },
           "response": []

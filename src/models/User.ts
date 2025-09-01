@@ -27,6 +27,41 @@ export class UserModel {
       .orderBy('created_at', 'desc');
   }
 
+  static async getCourses(userId: string): Promise<any[]> {
+    return await db('user_courses')
+      .join('courses', 'user_courses.course_id', 'courses.id')
+      .where('user_courses.user_id', userId)
+      .select('courses.*')
+      .orderBy('courses.name');
+  }
+
+  static async addCourse(userId: string, courseId: string): Promise<boolean> {
+    try {
+      // Check if relationship already exists
+      const exists = await UserCourseModel.exists(userId, courseId);
+      if (exists) {
+        return true; // Already exists, consider it successful
+      }
+      
+      // Create new relationship
+      await UserCourseModel.create(userId, courseId);
+      return true;
+    } catch (error) {
+      console.error('Error adding course to user:', error);
+      return false;
+    }
+  }
+
+  static async removeCourse(userId: string, courseId: string): Promise<boolean> {
+    try {
+      const deleted = await UserCourseModel.deleteByUserAndCourse(userId, courseId);
+      return deleted;
+    } catch (error) {
+      console.error('Error removing course from user:', error);
+      return false;
+    }
+  }
+
   static async create(data: CreateUserRequest): Promise<User> {
     const [user] = await db('users')
       .insert({

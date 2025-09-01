@@ -21,27 +21,21 @@ export const getResourcesByRole = (role: string): Resource[] => {
       {
         name: 'courses',
         label: 'Cursos',
-        actions: ['create', 'read', 'update', 'delete', 'createSubject', 'updateSubject']
+        actions: [
+          'create',
+          'read',
+          'update',
+          'delete',
+          'listStudents',
+          'listTeachers',
+          'createSubject',
+          'updateSubject'
+        ]
       },
       {
         name: 'semesters',
         label: 'Semestres',
         actions: ['create', 'read', 'update', 'delete']
-      },
-      {
-        name: 'subjects',
-        label: 'Disciplinas',
-        actions: ['read', 'update', 'delete']
-      },
-      {
-        name: 'enrollments',
-        label: 'Inscrições',
-        actions: ['create', 'read', 'update', 'delete']
-      },
-      {
-        name: 'reports',
-        label: 'Relatórios',
-        actions: ['read', 'export']
       }
     ],
     coordinator: [
@@ -53,72 +47,40 @@ export const getResourcesByRole = (role: string): Resource[] => {
       {
         name: 'courses',
         label: 'Cursos',
-        actions: ['read', 'update', 'createSubject', 'updateSubject']
-      },
-      {
-        name: 'semesters',
-        label: 'Semestres',
-        actions: ['create', 'read', 'update', 'delete']
-      },
-      {
-        name: 'subjects',
-        label: 'Disciplinas',
-        actions: ['read', 'update', 'delete']
-      },
-      {
-        name: 'enrollments',
-        label: 'Inscrições',
-        actions: ['read', 'update']
-      },
-      {
-        name: 'reports',
-        label: 'Relatórios',
-        actions: ['read', 'export']
+        actions: [
+          'create',
+          'read',
+          'update',
+          'listStudents',
+          'listTeachers',
+          'createSubject',
+          'updateSubject'
+        ]
       }
     ],
     teacher: [
       {
-        name: 'subjects',
-        label: 'Minhas Disciplinas',
-        actions: ['read', 'update']
-      },
-      {
-        name: 'enrollments',
-        label: 'Inscrições',
-        actions: ['read', 'update']
-      },
-      {
-        name: 'students',
-        label: 'Estudantes',
+        name: 'users',
+        label: 'Usuários',
         actions: ['read']
       },
       {
-        name: 'grades',
-        label: 'Notas',
-        actions: ['create', 'read', 'update']
+        name: 'courses',
+        label: 'Cursos',
+        actions: [
+          'read',
+          'listStudents',
+          'createSubject',
+          'updateSubject'
+        ]
       }
     ],
     student: [
       {
-        name: 'subjects',
-        label: 'Disciplinas Disponíveis',
-        actions: ['read']
+        name: 'courses',
+        label: 'Cursos',
+        actions: ['read', 'enrollSubject']
       },
-      {
-        name: 'enrollments',
-        label: 'Minhas Inscrições',
-        actions: ['create', 'read', 'delete']
-      },
-      {
-        name: 'grades',
-        label: 'Minhas Notas',
-        actions: ['read']
-      },
-      {
-        name: 'schedule',
-        label: 'Meu Cronograma',
-        actions: ['read']
-      }
     ]
   };
 

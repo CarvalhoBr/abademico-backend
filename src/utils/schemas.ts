@@ -18,6 +18,17 @@ export const updateUserBodySchema = Joi.object({
   courseIds: Joi.array().items(Joi.string().uuid()).optional()
 });
 
+
+
+export const addUserCourseBodySchema = Joi.object({
+  courseId: Joi.string().uuid().required()
+});
+
+export const userCourseParamsSchema = Joi.object({
+  id: uuidSchema,
+  courseId: uuidSchema
+});
+
 export const userRoleParamSchema = Joi.object({
   role: roleSchema
 });
@@ -139,4 +150,16 @@ export const queryParamsSchema = Joi.object({
   limit: Joi.number().integer().min(1).max(100).default(10),
   sort: Joi.string().default('created_at'),
   order: Joi.string().valid('asc', 'desc').default('desc')
+});
+
+export const courseSubjectEnrollParamsSchema = Joi.object({
+  courseId: uuidSchema,
+  subjectId: uuidSchema,
+  userId: uuidSchema
+});
+
+export const courseSubjectUnenrollParamsSchema = Joi.object({
+  courseId: uuidSchema,
+  subjectId: uuidSchema,
+  userId: uuidSchema
 });

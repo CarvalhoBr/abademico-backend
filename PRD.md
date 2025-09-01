@@ -114,6 +114,9 @@ Sistema acadêmico desenvolvido para demonstrar implementação de RBAC (Role-Ba
 - `GET /users/:id` - Obter usuário por ID
 - `PUT /users/:id` - Atualizar usuário
 - `DELETE /users/:id` - Remover usuário
+- `GET /users/:id/courses` - Listar cursos do usuário
+- `POST /users/:id/courses` - Adicionar curso ao usuário
+- `DELETE /users/:id/courses/:courseId` - Remover curso do usuário
 
 **Validações:**
 - Role deve ser um dos valores válidos: student, teacher, coordinator, admin
@@ -134,6 +137,8 @@ Sistema acadêmico desenvolvido para demonstrar implementação de RBAC (Role-Ba
 - `GET /courses/:id/teachers` - Listar professores do curso
 - `POST /courses/:id/subjects` - Criar disciplina no curso
 - `GET /courses/:id/:semesterId/subjects` - Listar disciplinas do curso por semestre
+- `POST /courses/:courseId/subjects/:subjectId/enroll/:userId` - Inscrever estudante na disciplina
+- `DELETE /courses/:courseId/subjects/:subjectId/enrollment/:userId` - Cancelar inscrição do estudante
 
 ### 4.3 Semestres
 **Endpoints:**

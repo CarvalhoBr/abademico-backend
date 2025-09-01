@@ -281,4 +281,88 @@ export class CourseController {
       return ResponseUtil.internalError(res, error.message);
     }
   }
+
+  static async enrollInSubject(req: Request, res: Response): Promise<Response> {
+    try {
+      const { courseId, subjectId, userId } = req.params;
+
+      // Validate course exists
+      const courseExists = await CourseModel.exists(courseId!);
+      if (!courseExists) {
+        return ResponseUtil.notFound(res, 'Course');
+      }
+
+      // Validate subject exists and belongs to the course
+      const subject = await SubjectModel.findById(subjectId!);
+      if (!subject) {
+        return ResponseUtil.notFound(res, 'Subject');
+      }
+
+      if (subject.courseId !== courseId) {
+        return ResponseUtil.badRequest(res, 'Subject does not belong to this course');
+      }
+
+      // Validate user exists and has correct role
+      const user = await UserModel.findById(userId!);
+      if (!user) {
+        return ResponseUtil.badRequest(res, 'User not found');
+      }
+      if (user.role !== 'student') {
+        return ResponseUtil.badRequest(res, 'User must have student role');
+      }
+
+      // Validate that user is enrolled in this course
+      const userInCourse = await UserCourseModel.exists(userId!, courseId!);
+      if (!userInCourse) {
+        return ResponseUtil.badRequest(res, 'User must be enrolled in this course');
+      }
+
+      const enrollment = await SubjectModel.enrollStudent(subjectId!, userId!);
+      return ResponseUtil.created(res, enrollment, 'Student enrolled successfully');
+    } catch (error: any) {
+      console.error('Error enrolling student:', error);
+      if (error.code === '23505') { // Unique constraint violation
+        return ResponseUtil.conflict(res, 'Student is already enrolled in this subject');
+      }
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
+
+  static async unenrollFromSubject(req: Request, res: Response): Promise<Response> {
+    try {
+      const { courseId, subjectId, userId } = req.params;
+
+      // Validate course exists
+      const courseExists = await CourseModel.exists(courseId!);
+      if (!courseExists) {
+        return ResponseUtil.notFound(res, 'Course');
+      }
+
+      // Validate subject exists and belongs to the course
+      const subject = await SubjectModel.findById(subjectId!);
+      if (!subject) {
+        return ResponseUtil.notFound(res, 'Subject');
+      }
+
+      if (subject.courseId !== courseId) {
+        return ResponseUtil.badRequest(res, 'Subject does not belong to this course');
+      }
+
+      // Validate user exists
+      const userExists = await UserModel.exists(userId!);
+      if (!userExists) {
+        return ResponseUtil.notFound(res, 'User');
+      }
+
+      const unenrolled = await SubjectModel.unenrollStudent(subjectId!, userId!);
+      if (!unenrolled) {
+        return ResponseUtil.notFound(res, 'Enrollment');
+      }
+
+      return ResponseUtil.success(res, { courseId, subjectId, userId }, 'Student unenrolled successfully');
+    } catch (error: any) {
+      console.error('Error unenrolling student:', error);
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
 }

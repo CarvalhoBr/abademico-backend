@@ -30,6 +30,85 @@ export class UserController {
     }
   }
 
+  static async getCourses(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id } = req.params;
+
+      // Check if user exists
+      const userExists = await UserModel.exists(id!);
+      if (!userExists) {
+        return ResponseUtil.notFound(res, 'User');
+      }
+
+      const courses = await UserModel.getCourses(id!);
+      return ResponseUtil.success(res, courses, 'User courses retrieved successfully');
+    } catch (error: any) {
+      console.error('Error fetching user courses:', error);
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
+
+  static async addCourse(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id } = req.params;
+      const { courseId } = req.body;
+
+      if (!courseId) {
+        return ResponseUtil.badRequest(res, 'Course ID is required');
+      }
+
+      // Check if user exists
+      const userExists = await UserModel.exists(id!);
+      if (!userExists) {
+        return ResponseUtil.notFound(res, 'User');
+      }
+
+      // Validate course exists
+      const courseExists = await CourseModel.exists(courseId);
+      if (!courseExists) {
+        return ResponseUtil.badRequest(res, 'Course not found');
+      }
+
+      const success = await UserModel.addCourse(id!, courseId);
+      if (!success) {
+        return ResponseUtil.internalError(res, 'Failed to add course to user');
+      }
+
+      return ResponseUtil.success(res, { courseId }, 'Course added to user successfully');
+    } catch (error: any) {
+      console.error('Error adding course to user:', error);
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
+
+  static async removeCourse(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id, courseId } = req.params;
+
+      // Check if user exists
+      const userExists = await UserModel.exists(id!);
+      if (!userExists) {
+        return ResponseUtil.notFound(res, 'User');
+      }
+
+      // Validate course exists
+      const courseExists = await CourseModel.exists(courseId!);
+      if (!courseExists) {
+        return ResponseUtil.badRequest(res, 'Course not found');
+      }
+
+      const success = await UserModel.removeCourse(id!, courseId!);
+      if (!success) {
+        return ResponseUtil.notFound(res, 'User-course relationship');
+      }
+
+      return ResponseUtil.success(res, { courseId }, 'Course removed from user successfully');
+    } catch (error: any) {
+      console.error('Error removing course from user:', error);
+      return ResponseUtil.internalError(res, error.message);
+    }
+  }
+
   static async create(req: Request, res: Response): Promise<Response> {
     try {
       const { role } = req.params;

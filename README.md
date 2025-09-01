@@ -106,6 +106,9 @@ npm run dev
 - `GET /api/users/:id` - Obter usuário por ID
 - `PUT /api/users/:id` - Atualizar usuário
 - `DELETE /api/users/:id` - Remover usuário
+- `GET /api/users/:id/courses` - Listar cursos do usuário
+- `POST /api/users/:id/courses` - Adicionar curso ao usuário
+- `DELETE /api/users/:id/courses/:courseId` - Remover curso do usuário
 
 ### Cursos
 - `POST /api/courses` - Criar curso
@@ -118,6 +121,8 @@ npm run dev
 - `GET /api/courses/:id/teachers` - Listar professores do curso
 - `POST /api/courses/:id/subjects` - Criar disciplina no curso
 - `GET /api/courses/:id/:semesterId/subjects` - Listar disciplinas do curso por semestre
+- `POST /api/courses/:courseId/subjects/:subjectId/enroll/:userId` - Inscrever estudante na disciplina
+- `DELETE /api/courses/:courseId/subjects/:subjectId/enrollment/:userId` - Cancelar inscrição do estudante
 
 ### Semestres
 - `POST /api/semesters` - Criar semestre

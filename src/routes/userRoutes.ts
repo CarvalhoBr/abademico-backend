@@ -4,6 +4,8 @@ import { validateBody, validateParams } from '../middlewares/validation';
 import {
   createUserBodySchema,
   updateUserBodySchema,
+  addUserCourseBodySchema,
+  userCourseParamsSchema,
   userRoleParamSchema,
   userIdParamSchema,
   roleSchema
@@ -27,6 +29,18 @@ router.post('/:role',
   validateParams(userRoleParamSchema),
   validateBody(createUserBodySchema),
   UserController.create
+);
+
+// User courses management routes
+router.get('/:id/courses', validateParams(userIdParamSchema), UserController.getCourses);
+router.post('/:id/courses', 
+  validateParams(userIdParamSchema),
+  validateBody(addUserCourseBodySchema),
+  UserController.addCourse
+);
+router.delete('/:id/courses/:courseId', 
+  validateParams(userCourseParamsSchema),
+  UserController.removeCourse
 );
 
 // Additional routes

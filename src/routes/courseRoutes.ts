@@ -6,7 +6,9 @@ import {
   updateCourseBodySchema,
   courseIdParamSchema,
   courseSubjectsParamSchema,
-  createSubjectInCourseBodySchema
+  createSubjectInCourseBodySchema,
+  courseSubjectEnrollParamsSchema,
+  courseSubjectUnenrollParamsSchema
 } from '../utils/schemas';
 
 const router = Router();
@@ -31,6 +33,16 @@ router.post('/:id/subjects',
   validateParams(courseIdParamSchema),
   validateBody(createSubjectInCourseBodySchema),
   CourseController.createSubject
+);
+
+// Subject enrollment routes
+router.post('/:courseId/subjects/:subjectId/enroll/:userId', 
+  validateParams(courseSubjectEnrollParamsSchema),
+  CourseController.enrollInSubject
+);
+router.delete('/:courseId/subjects/:subjectId/enrollment/:userId', 
+  validateParams(courseSubjectUnenrollParamsSchema),
+  CourseController.unenrollFromSubject
 );
 
 export default router;

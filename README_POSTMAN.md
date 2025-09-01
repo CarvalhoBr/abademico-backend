@@ -42,6 +42,9 @@ docker compose exec app npm run seed
 2. `Create Student` - Criar novo estudante
 3. `Create Teacher` - Criar novo professor
 4. `Get Users by Role` - Filtrar por role
+5. `Get User Courses` - Ver cursos de um usuário
+6. `Add Course to User` - Adicionar curso a um usuário
+7. `Remove Course from User` - Remover curso de um usuário
 
 #### **📅 Passo 3: Semesters**
 1. `Get All Semesters` - Ver semestres existentes
@@ -52,6 +55,8 @@ docker compose exec app npm run seed
 1. `Get All Subjects` - Ver disciplinas existentes
 2. `Create Subject` - Criar nova disciplina
 3. `Get Subject Enrollments` - Ver inscrições da disciplina
+4. `Enroll Student in Course Subject` - Inscrever estudante na disciplina do curso
+5. `Unenroll Student from Course Subject` - Cancelar inscrição do estudante
 
 #### **✍️ Passo 5: Enrollments**
 1. `Get All Enrollments` - Ver inscrições existentes
