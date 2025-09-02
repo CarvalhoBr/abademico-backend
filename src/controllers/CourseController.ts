@@ -49,11 +49,7 @@ export class CourseController {
 
   static async create(req: Request, res: Response): Promise<Response> {
     try {
-      // Validate input
-      const { error, value } = createCourseSchema.validate(req.body);
-      if (error) {
-        return ResponseUtil.validationError(res, error.details);
-      }
+      const value = req.body
 
       // Check if code already exists
       const existingCourse = await CourseModel.findByCode(value.code);
