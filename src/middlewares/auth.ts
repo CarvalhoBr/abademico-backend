@@ -14,6 +14,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   try {
     const decoded = JwtUtil.verifyToken(token);
     (req as any).user = decoded;
+    (req as any).userId = decoded.id; // Add userId to request context for easier access
     next();
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {

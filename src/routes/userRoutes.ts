@@ -38,7 +38,7 @@ router.post('/:id/courses',
   validateBody(addUserCourseBodySchema),
   UserController.addCourse
 );
-router.delete('/:id/courses/:courseId', 
+router.delete('/:id/courses/:course_id', 
   validateParams(userCourseParamsSchema),
   UserController.removeCourse
 );

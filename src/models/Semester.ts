@@ -21,8 +21,8 @@ export class SemesterModel {
     const [result] = await db('semesters')
       .insert({
         code: data.code,
-        start_date: data.startDate,
-        end_date: data.endDate
+        start_date: data.start_date,
+        end_date: data.end_date
       })
       .returning('*');
     
@@ -33,8 +33,8 @@ export class SemesterModel {
     const updateData: any = {};
     
     if (data.code !== undefined) updateData.code = data.code;
-    if (data.startDate !== undefined) updateData.start_date = data.startDate;
-    if (data.endDate !== undefined) updateData.end_date = data.endDate;
+    if (data.start_date !== undefined) updateData.start_date = data.start_date;
+    if (data.end_date !== undefined) updateData.end_date = data.end_date;
     
     updateData.updated_at = new Date();
 

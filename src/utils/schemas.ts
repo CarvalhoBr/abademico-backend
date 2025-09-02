@@ -9,24 +9,24 @@ export const statusSchema = Joi.string().valid('active', 'completed', 'dropped')
 export const createUserBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
-  courseIds: Joi.array().items(Joi.string().uuid()).optional()
+  course_ids: Joi.array().items(Joi.string().uuid()).optional()
 });
 
 export const updateUserBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).optional(),
   email: Joi.string().email().optional(),
-  courseIds: Joi.array().items(Joi.string().uuid()).optional()
+  course_ids: Joi.array().items(Joi.string().uuid()).optional()
 });
 
 
 
 export const addUserCourseBodySchema = Joi.object({
-  courseId: Joi.string().uuid().required()
+  course_id: Joi.string().uuid().required()
 });
 
 export const userCourseParamsSchema = Joi.object({
   id: uuidSchema,
-  courseId: uuidSchema
+  course_id: uuidSchema
 });
 
 export const userRoleParamSchema = Joi.object({
@@ -42,14 +42,14 @@ export const createCourseBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   code: Joi.string().min(2).max(10).alphanum().required(),
   description: Joi.string().max(500).optional(),
-  coordinatorId: Joi.string().uuid().optional()
+  coordinator_id: Joi.string().uuid().optional()
 });
 
 export const updateCourseBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).optional(),
   code: Joi.string().min(2).max(10).alphanum().optional(),
   description: Joi.string().max(500).allow(null).optional(),
-  coordinatorId: Joi.string().uuid().allow(null).optional()
+  coordinator_id: Joi.string().uuid().allow(null).optional()
 });
 
 export const courseIdParamSchema = Joi.object({
@@ -58,22 +58,22 @@ export const courseIdParamSchema = Joi.object({
 
 export const courseSubjectsParamSchema = Joi.object({
   id: uuidSchema,
-  semesterId: uuidSchema
+  semester_id: uuidSchema
 });
 
 // Semester schemas
 export const createSemesterBodySchema = Joi.object({
   code: Joi.string().pattern(/^\d{4}-\d{2}$/).required(),
-  startDate: Joi.date().iso().required(),
-  endDate: Joi.date().iso().min(Joi.ref('startDate')).required()
+  start_date: Joi.date().iso().required(),
+  end_date: Joi.date().iso().min(Joi.ref('start_date')).required()
 });
 
 export const updateSemesterBodySchema = Joi.object({
   code: Joi.string().pattern(/^\d{4}-\d{2}$/).optional(),
-  startDate: Joi.date().iso().optional(),
-  endDate: Joi.date().iso().optional()
+  start_date: Joi.date().iso().optional(),
+  end_date: Joi.date().iso().optional()
 }).custom((value, helpers) => {
-  if (value.startDate && value.endDate && new Date(value.startDate) >= new Date(value.endDate)) {
+  if (value.start_date && value.end_date && new Date(value.start_date) >= new Date(value.end_date)) {
     return helpers.error('any.invalid', { message: 'End date must be after start date' });
   }
   return value;
@@ -88,26 +88,26 @@ export const createSubjectBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   code: Joi.string().min(2).max(20).alphanum().required(),
   credits: Joi.number().integer().min(1).max(10).required(),
-  courseId: Joi.string().uuid().required(),
-  semesterId: Joi.string().uuid().required(),
-  teacherId: Joi.string().uuid().optional()
+  course_id: Joi.string().uuid().required(),
+  semester_id: Joi.string().uuid().required(),
+  teacher_id: Joi.string().uuid().optional()
 });
 
 export const createSubjectInCourseBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   code: Joi.string().min(2).max(20).alphanum().required(),
   credits: Joi.number().integer().min(1).max(10).required(),
-  semesterId: Joi.string().uuid().required(),
-  teacherId: Joi.string().uuid().optional()
+  semester_id: Joi.string().uuid().required(),
+  teacher_id: Joi.string().uuid().optional()
 });
 
 export const updateSubjectBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).optional(),
   code: Joi.string().min(2).max(20).alphanum().optional(),
   credits: Joi.number().integer().min(1).max(10).optional(),
-  courseId: Joi.string().uuid().optional(),
-  semesterId: Joi.string().uuid().optional(),
-  teacherId: Joi.string().uuid().allow(null).optional()
+  course_id: Joi.string().uuid().optional(),
+  semester_id: Joi.string().uuid().optional(),
+  teacher_id: Joi.string().uuid().allow(null).optional()
 });
 
 export const subjectIdParamSchema = Joi.object({
@@ -115,24 +115,24 @@ export const subjectIdParamSchema = Joi.object({
 });
 
 export const subjectEnrollParamsSchema = Joi.object({
-  subjectId: uuidSchema,
-  studentId: uuidSchema
+  subject_id: uuidSchema,
+  student_id: uuidSchema
 });
 
 export const enrollStudentBodySchema = Joi.object({
-  studentId: Joi.string().uuid().required()
+  student_id: Joi.string().uuid().required()
 });
 
 // Enrollment schemas
 export const createEnrollmentBodySchema = Joi.object({
-  studentId: Joi.string().uuid().required(),
-  subjectId: Joi.string().uuid().required(),
+  student_id: Joi.string().uuid().required(),
+  subject_id: Joi.string().uuid().required(),
   status: statusSchema.optional()
 });
 
 export const updateEnrollmentBodySchema = Joi.object({
-  studentId: Joi.string().uuid().optional(),
-  subjectId: Joi.string().uuid().optional(),
+  student_id: Joi.string().uuid().optional(),
+  subject_id: Joi.string().uuid().optional(),
   status: statusSchema.optional()
 });
 
@@ -153,13 +153,13 @@ export const queryParamsSchema = Joi.object({
 });
 
 export const courseSubjectEnrollParamsSchema = Joi.object({
-  courseId: uuidSchema,
-  subjectId: uuidSchema,
-  userId: uuidSchema
+  course_id: uuidSchema,
+  subject_id: uuidSchema,
+  user_id: uuidSchema
 });
 
 export const courseSubjectUnenrollParamsSchema = Joi.object({
-  courseId: uuidSchema,
-  subjectId: uuidSchema,
-  userId: uuidSchema
+  course_id: uuidSchema,
+  subject_id: uuidSchema,
+  user_id: uuidSchema
 });

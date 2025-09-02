@@ -46,7 +46,7 @@ export class SemesterController {
       }
 
       // Validate date range
-      const validDates = await SemesterModel.validateDateRange(value.startDate, value.endDate);
+      const validDates = await SemesterModel.validateDateRange(value.start_date, value.end_date);
       if (!validDates) {
         return ResponseUtil.badRequest(res, 'Start date must be before end date');
       }
@@ -84,8 +84,8 @@ export class SemesterController {
       }
 
       // Validate date range if both dates are provided
-      if (value.startDate && value.endDate) {
-        const validDates = await SemesterModel.validateDateRange(value.startDate, value.endDate);
+      if (value.start_date && value.end_date) {
+        const validDates = await SemesterModel.validateDateRange(value.start_date, value.end_date);
         if (!validDates) {
           return ResponseUtil.badRequest(res, 'Start date must be before end date');
         }

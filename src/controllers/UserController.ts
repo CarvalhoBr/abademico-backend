@@ -51,9 +51,9 @@ export class UserController {
   static async addCourse(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
-      const { courseId } = req.body;
+      const { course_id } = req.body;
 
-      if (!courseId) {
+      if (!course_id) {
         return ResponseUtil.badRequest(res, 'Course ID is required');
       }
 
@@ -64,17 +64,17 @@ export class UserController {
       }
 
       // Validate course exists
-      const courseExists = await CourseModel.exists(courseId);
+      const courseExists = await CourseModel.exists(course_id);
       if (!courseExists) {
         return ResponseUtil.badRequest(res, 'Course not found');
       }
 
-      const success = await UserModel.addCourse(id!, courseId);
+      const success = await UserModel.addCourse(id!, course_id);
       if (!success) {
         return ResponseUtil.internalError(res, 'Failed to add course to user');
       }
 
-      return ResponseUtil.success(res, { courseId }, 'Course added to user successfully');
+      return ResponseUtil.success(res, { course_id }, 'Course added to user successfully');
     } catch (error: any) {
       console.error('Error adding course to user:', error);
       return ResponseUtil.internalError(res, error.message);
@@ -83,7 +83,7 @@ export class UserController {
 
   static async removeCourse(req: Request, res: Response): Promise<Response> {
     try {
-      const { id, courseId } = req.params;
+      const { id, course_id } = req.params;
 
       // Check if user exists
       const userExists = await UserModel.exists(id!);
@@ -92,17 +92,17 @@ export class UserController {
       }
 
       // Validate course exists
-      const courseExists = await CourseModel.exists(courseId!);
+      const courseExists = await CourseModel.exists(course_id!);
       if (!courseExists) {
         return ResponseUtil.badRequest(res, 'Course not found');
       }
 
-      const success = await UserModel.removeCourse(id!, courseId!);
+      const success = await UserModel.removeCourse(id!, course_id!);
       if (!success) {
         return ResponseUtil.notFound(res, 'User-course relationship');
       }
 
-      return ResponseUtil.success(res, { courseId }, 'Course removed from user successfully');
+      return ResponseUtil.success(res, { course_id }, 'Course removed from user successfully');
     } catch (error: any) {
       console.error('Error removing course from user:', error);
       return ResponseUtil.internalError(res, error.message);
@@ -120,17 +120,17 @@ export class UserController {
         return ResponseUtil.conflict(res, 'Email already exists');
       }
 
-      // Validate courseIds for students
-      if (userData.role === 'student' && (!userData.courseIds || userData.courseIds.length === 0)) {
+      // Validate course_ids for students
+      if (userData.role === 'student' && (!userData.course_ids || userData.course_ids.length === 0)) {
         return ResponseUtil.badRequest(res, 'Course IDs are required for students');
       }
 
-      // Validate courseIds exist if provided
-      if (userData.courseIds && userData.courseIds.length > 0) {
-        for (const courseId of userData.courseIds) {
-          const courseExists = await CourseModel.exists(courseId);
+      // Validate course_ids exist if provided
+      if (userData.course_ids && userData.course_ids.length > 0) {
+        for (const course_id of userData.course_ids) {
+          const courseExists = await CourseModel.exists(course_id);
           if (!courseExists) {
-            return ResponseUtil.badRequest(res, `Course with ID ${courseId} not found`);
+            return ResponseUtil.badRequest(res, `Course with ID ${course_id} not found`);
           }
         }
       }
@@ -163,19 +163,19 @@ export class UserController {
         }
       }
 
-      // Validate courseIds exist if provided
-      if (updateData.courseIds && updateData.courseIds.length > 0) {
-        for (const courseId of updateData.courseIds) {
-          const courseExists = await CourseModel.exists(courseId);
+      // Validate course_ids exist if provided
+      if (updateData.course_ids && updateData.course_ids.length > 0) {
+        for (const course_id of updateData.course_ids) {
+          const courseExists = await CourseModel.exists(course_id);
           if (!courseExists) {
-            return ResponseUtil.badRequest(res, `Course with ID ${courseId} not found`);
+            return ResponseUtil.badRequest(res, `Course with ID ${course_id} not found`);
           }
         }
       }
 
-      // Validate role and courseIds relationship
+      // Validate role and course_ids relationship
       const finalRole = updateData.role || existingUser.role;
-      if (finalRole === 'student' && (!updateData.courseIds || updateData.courseIds.length === 0)) {
+      if (finalRole === 'student' && (!updateData.course_ids || updateData.course_ids.length === 0)) {
         return ResponseUtil.badRequest(res, 'Students must be assigned to at least one course');
       }
 

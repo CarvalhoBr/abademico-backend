@@ -1,18 +1,18 @@
 export class Semester {
   public readonly id: string;
   public readonly code: string;
-  public readonly startDate: Date;
-  public readonly endDate: Date;
-  public readonly createdAt: Date;
-  public readonly updatedAt: Date;
+  public readonly start_date: Date;
+  public readonly end_date: Date;
+  public readonly created_at: Date;
+  public readonly updated_at: Date;
 
   constructor(dbData: any) {
     this.id = dbData.id;
     this.code = dbData.code;
-    this.startDate = dbData.start_date;
-    this.endDate = dbData.end_date;
-    this.createdAt = dbData.created_at;
-    this.updatedAt = dbData.updated_at;
+    this.start_date = dbData.start_date;
+    this.end_date = dbData.end_date;
+    this.created_at = dbData.created_at;
+    this.updated_at = dbData.updated_at;
   }
 
   static fromArray(dbArray: any[]): Semester[] {

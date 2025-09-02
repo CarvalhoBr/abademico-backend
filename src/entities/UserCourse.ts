@@ -1,16 +1,16 @@
 export class UserCourse {
   public readonly id: string;
-  public readonly userId: string;
-  public readonly courseId: string;
-  public readonly createdAt: Date;
-  public readonly updatedAt: Date;
+  public readonly user_id: string;
+  public readonly course_id: string;
+  public readonly created_at: Date;
+  public readonly updated_at: Date;
 
   constructor(dbData: any) {
     this.id = dbData.id;
-    this.userId = dbData.user_id;
-    this.courseId = dbData.course_id;
-    this.createdAt = dbData.created_at;
-    this.updatedAt = dbData.updated_at;
+    this.user_id = dbData.user_id;
+    this.course_id = dbData.course_id;
+    this.created_at = dbData.created_at;
+    this.updated_at = dbData.updated_at;
   }
 
   static fromArray(dbArray: any[]): UserCourse[] {

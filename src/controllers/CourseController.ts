@@ -62,8 +62,8 @@ export class CourseController {
       }
 
       // Validate coordinator exists and has correct role
-      if (value.coordinatorId) {
-        const coordinator = await UserModel.findById(value.coordinatorId);
+      if (value.coordinator_id) {
+        const coordinator = await UserModel.findById(value.coordinator_id);
         if (!coordinator) {
           return ResponseUtil.badRequest(res, 'Coordinator not found');
         }
@@ -105,8 +105,8 @@ export class CourseController {
       }
 
       // Validate coordinator exists and has correct role
-      if (value.coordinatorId) {
-        const coordinator = await UserModel.findById(value.coordinatorId);
+      if (value.coordinator_id) {
+        const coordinator = await UserModel.findById(value.coordinator_id);
         if (!coordinator) {
           return ResponseUtil.badRequest(res, 'Coordinator not found');
         }
@@ -199,7 +199,15 @@ export class CourseController {
 
   static async getSubjects(req: Request, res: Response): Promise<Response> {
     try {
-      const { id, semesterId } = req.params;
+      const { id, semester_id } = req.params;
+      const user = (req as any).user; // Get user from auth middleware
+      
+      if (!user) {
+        return ResponseUtil.error(res, 'UNAUTHORIZED', 'User not authenticated', 401);
+      }
+
+      // Extract user_id from authenticated user (may be undefined for some user types)
+      const user_id = user.id;
 
       // Validate course exists
       const courseExists = await CourseModel.exists(id!);
@@ -208,13 +216,19 @@ export class CourseController {
       }
 
       // Validate semester exists
-      const semesterExists = await SemesterModel.exists(semesterId!);
+      const semesterExists = await SemesterModel.exists(semester_id!);
       if (!semesterExists) {
         return ResponseUtil.notFound(res, 'Semester');
       }
 
-      // Get subjects with details for the specific course and semester
-      const subjects = await SubjectModel.findByCourseAndSemesterWithDetails(id!, semesterId!);
+      // Get subjects with details and enrollment status for the specific course and semester
+      // If user_id exists and user is a student, check enrollment status; otherwise, enrolled will be false
+      const shouldCheckEnrollment = user_id && user.role === 'student';
+      const subjects = await SubjectModel.findByCourseAndSemesterWithEnrollmentStatus(
+        id!, 
+        semester_id!, 
+        shouldCheckEnrollment ? user_id : undefined
+      );
 
       return ResponseUtil.success(res, subjects, 'Course subjects retrieved successfully');
     } catch (error: any) {
@@ -225,7 +239,7 @@ export class CourseController {
 
   static async createSubject(req: Request, res: Response): Promise<Response> {
     try {
-      const { id: courseId } = req.params;
+      const { id: course_id } = req.params;
 
       // Validate input
       const { error, value } = createSubjectInCourseSchema.validate(req.body);
@@ -234,26 +248,26 @@ export class CourseController {
       }
 
       // Validate course exists
-      const courseExists = await CourseModel.exists(courseId!);
+      const courseExists = await CourseModel.exists(course_id!);
       if (!courseExists) {
         return ResponseUtil.notFound(res, 'Course');
       }
 
       // Validate semester exists
-      const semesterExists = await SemesterModel.exists(value.semesterId);
+      const semesterExists = await SemesterModel.exists(value.semester_id);
       if (!semesterExists) {
         return ResponseUtil.badRequest(res, 'Semester not found');
       }
 
       // Check if subject code already exists in the course and semester
-      const codeExists = await SubjectModel.codeExistsInCourseAndSemester(value.code, courseId!, value.semesterId);
+      const codeExists = await SubjectModel.codeExistsInCourseAndSemester(value.code, course_id!, value.semester_id);
       if (codeExists) {
         return ResponseUtil.conflict(res, 'Subject code already exists in this course and semester');
       }
 
               // Validate teacher exists and has correct role
-        if (value.teacherId) {
-          const teacher = await UserModel.findById(value.teacherId);
+        if (value.teacher_id) {
+          const teacher = await UserModel.findById(value.teacher_id);
           if (!teacher) {
             return ResponseUtil.badRequest(res, 'Teacher not found');
           }
@@ -262,16 +276,16 @@ export class CourseController {
           }
 
           // Validate that teacher is assigned to this course
-          const teacherInCourse = await UserCourseModel.exists(value.teacherId, courseId!);
+          const teacherInCourse = await UserCourseModel.exists(value.teacher_id, course_id!);
           if (!teacherInCourse) {
             return ResponseUtil.badRequest(res, 'Teacher must be assigned to this course');
           }
         }
 
-      // Create subject with courseId from URL params
+      // Create subject with course_id from URL params
       const subjectData = {
         ...value,
-        courseId: courseId!
+        course_id: course_id!
       };
 
       const subject = await SubjectModel.create(subjectData);
@@ -284,26 +298,26 @@ export class CourseController {
 
   static async enrollInSubject(req: Request, res: Response): Promise<Response> {
     try {
-      const { courseId, subjectId, userId } = req.params;
+      const { course_id, subject_id, user_id } = req.params;
 
       // Validate course exists
-      const courseExists = await CourseModel.exists(courseId!);
+      const courseExists = await CourseModel.exists(course_id!);
       if (!courseExists) {
         return ResponseUtil.notFound(res, 'Course');
       }
 
       // Validate subject exists and belongs to the course
-      const subject = await SubjectModel.findById(subjectId!);
+      const subject = await SubjectModel.findById(subject_id!);
       if (!subject) {
         return ResponseUtil.notFound(res, 'Subject');
       }
 
-      if (subject.courseId !== courseId) {
+      if (subject.course_id !== course_id) {
         return ResponseUtil.badRequest(res, 'Subject does not belong to this course');
       }
 
       // Validate user exists and has correct role
-      const user = await UserModel.findById(userId!);
+      const user = await UserModel.findById(user_id!);
       if (!user) {
         return ResponseUtil.badRequest(res, 'User not found');
       }
@@ -312,12 +326,12 @@ export class CourseController {
       }
 
       // Validate that user is enrolled in this course
-      const userInCourse = await UserCourseModel.exists(userId!, courseId!);
+      const userInCourse = await UserCourseModel.exists(user_id!, course_id!);
       if (!userInCourse) {
         return ResponseUtil.badRequest(res, 'User must be enrolled in this course');
       }
 
-      const enrollment = await SubjectModel.enrollStudent(subjectId!, userId!);
+      const enrollment = await SubjectModel.enrollStudent(subject_id!, user_id!);
       return ResponseUtil.created(res, enrollment, 'Student enrolled successfully');
     } catch (error: any) {
       console.error('Error enrolling student:', error);
@@ -330,36 +344,36 @@ export class CourseController {
 
   static async unenrollFromSubject(req: Request, res: Response): Promise<Response> {
     try {
-      const { courseId, subjectId, userId } = req.params;
+      const { course_id, subject_id, user_id } = req.params;
 
       // Validate course exists
-      const courseExists = await CourseModel.exists(courseId!);
+      const courseExists = await CourseModel.exists(course_id!);
       if (!courseExists) {
         return ResponseUtil.notFound(res, 'Course');
       }
 
       // Validate subject exists and belongs to the course
-      const subject = await SubjectModel.findById(subjectId!);
+      const subject = await SubjectModel.findById(subject_id!);
       if (!subject) {
         return ResponseUtil.notFound(res, 'Subject');
       }
 
-      if (subject.courseId !== courseId) {
+      if (subject.course_id !== course_id) {
         return ResponseUtil.badRequest(res, 'Subject does not belong to this course');
       }
 
       // Validate user exists
-      const userExists = await UserModel.exists(userId!);
+      const userExists = await UserModel.exists(user_id!);
       if (!userExists) {
         return ResponseUtil.notFound(res, 'User');
       }
 
-      const unenrolled = await SubjectModel.unenrollStudent(subjectId!, userId!);
+      const unenrolled = await SubjectModel.unenrollStudent(subject_id!, user_id!);
       if (!unenrolled) {
         return ResponseUtil.notFound(res, 'Enrollment');
       }
 
-      return ResponseUtil.success(res, { courseId, subjectId, userId }, 'Student unenrolled successfully');
+      return ResponseUtil.success(res, { course_id, subject_id, user_id }, 'Student unenrolled successfully');
     } catch (error: any) {
       console.error('Error unenrolling student:', error);
       return ResponseUtil.internalError(res, error.message);

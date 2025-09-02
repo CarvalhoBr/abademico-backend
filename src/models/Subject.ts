@@ -68,6 +68,60 @@ export class SubjectModel {
       .orderBy('subjects.name');
   }
 
+  static async findByCourseAndSemesterWithEnrollmentStatus(courseId: string, semesterId: string, userId?: string): Promise<any[]> {
+    const query = db('subjects')
+      .leftJoin('users', 'subjects.teacher_id', 'users.id')
+      .join('semesters', 'subjects.semester_id', 'semesters.id')
+      .join('courses', 'subjects.course_id', 'courses.id')
+      .where({ 
+        'subjects.course_id': courseId,
+        'subjects.semester_id': semesterId 
+      })
+    
+    if (userId) {
+      query.leftJoin('enrollments', function() {
+        this.on('enrollments.subject_id', '=', 'subjects.id')
+            .andOn('enrollments.student_id', '=', db.raw('?', [userId]));
+      })
+    }
+
+    const results = await query.select(
+      'subjects.*',
+      'users.name as teacher_name',
+      'users.email as teacher_email',
+      'semesters.code as semester_code',
+      'courses.name as course_name',
+      'courses.code as course_code',
+      userId ? db.raw('CASE WHEN enrollments.id IS NOT NULL AND enrollments.status = \'active\' THEN true ELSE false END as enrolled') : db.raw('false as enrolled')
+    )
+    .orderBy('subjects.name');
+
+    // Return results with snake_case and add enrolled status
+    return results.map(result => {
+      const subject = new Subject({
+        id: result.id,
+        name: result.name,
+        code: result.code,
+        credits: result.credits,
+        course_id: result.course_id,
+        semester_id: result.semester_id,
+        teacher_id: result.teacher_id,
+        created_at: result.created_at,
+        updated_at: result.updated_at
+      });
+
+      return {
+        ...subject,
+        teacher_name: result.teacher_name,
+        teacher_email: result.teacher_email,
+        semester_code: result.semester_code,
+        course_name: result.course_name,
+        course_code: result.course_code,
+        enrolled: result.enrolled || false
+      };
+    });
+  }
+
   static async findWithDetails(): Promise<any[]> {
     return await db('subjects')
       .leftJoin('users', 'subjects.teacher_id', 'users.id')
@@ -84,15 +138,61 @@ export class SubjectModel {
       .orderBy('subjects.created_at', 'desc');
   }
 
+  static async findWithDetailsAndEnrollmentStatus(userId: string): Promise<any[]> {
+    const results = await db('subjects')
+      .leftJoin('users', 'subjects.teacher_id', 'users.id')
+      .join('semesters', 'subjects.semester_id', 'semesters.id')
+      .join('courses', 'subjects.course_id', 'courses.id')
+      .leftJoin('enrollments', function() {
+        this.on('enrollments.subject_id', '=', 'subjects.id')
+            .andOn('enrollments.student_id', '=', db.raw('?', [userId]));
+      })
+      .select(
+        'subjects.*',
+        'users.name as teacher_name',
+        'users.email as teacher_email',
+        'semesters.code as semester_code',
+        'courses.name as course_name',
+        'courses.code as course_code',
+        db.raw('CASE WHEN enrollments.id IS NOT NULL AND enrollments.status = \'active\' THEN true ELSE false END as enrolled')
+      )
+      .orderBy('subjects.created_at', 'desc');
+
+    // Return results with snake_case and add enrolled status
+    return results.map(result => {
+      const subject = new Subject({
+        id: result.id,
+        name: result.name,
+        code: result.code,
+        credits: result.credits,
+        course_id: result.course_id,
+        semester_id: result.semester_id,
+        teacher_id: result.teacher_id,
+        created_at: result.created_at,
+        updated_at: result.updated_at
+      });
+
+      return {
+        ...subject,
+        teacher_name: result.teacher_name,
+        teacher_email: result.teacher_email,
+        semester_code: result.semester_code,
+        course_name: result.course_name,
+        course_code: result.course_code,
+        enrolled: result.enrolled
+      };
+    });
+  }
+
   static async create(data: CreateSubjectRequest): Promise<Subject> {
     const [result] = await db('subjects')
       .insert({
         name: data.name,
         code: data.code,
         credits: data.credits,
-        course_id: data.courseId,
-        semester_id: data.semesterId,
-        teacher_id: data.teacherId || null
+        course_id: data.course_id,
+        semester_id: data.semester_id,
+        teacher_id: data.teacher_id || null
       })
       .returning('*');
     
@@ -105,9 +205,9 @@ export class SubjectModel {
     if (data.name !== undefined) updateData.name = data.name;
     if (data.code !== undefined) updateData.code = data.code;
     if (data.credits !== undefined) updateData.credits = data.credits;
-    if (data.courseId !== undefined) updateData.course_id = data.courseId;
-    if (data.semesterId !== undefined) updateData.semester_id = data.semesterId;
-    if (data.teacherId !== undefined) updateData.teacher_id = data.teacherId;
+    if (data.course_id !== undefined) updateData.course_id = data.course_id;
+    if (data.semester_id !== undefined) updateData.semester_id = data.semester_id;
+    if (data.teacher_id !== undefined) updateData.teacher_id = data.teacher_id;
     
     updateData.updated_at = new Date();
 

@@ -1,5 +1,4 @@
-// Entity classes are now imported from ../entities
-// These interfaces have been replaced by classes that handle field mapping automatically
+// Entity classes using snake_case for consistency with database and endpoints
 import { User as UserEntity } from '../entities/User';
 import { Enrollment as EnrollmentEntity } from '../entities/Enrollment';
 
@@ -40,15 +39,15 @@ export interface CreateCourseRequest {
   name: string;
   code: string;
   description?: string;
-  coordinatorId?: string;
+  coordinator_id?: string;
 }
 
 export interface UpdateCourseRequest extends Partial<CreateCourseRequest> {}
 
 export interface CreateSemesterRequest {
   code: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
 }
 
 export interface UpdateSemesterRequest extends Partial<CreateSemesterRequest> {}
@@ -57,16 +56,16 @@ export interface CreateSubjectRequest {
   name: string;
   code: string;
   credits: number;
-  courseId: string;
-  semesterId: string;
-  teacherId?: string;
+  course_id: string;
+  semester_id: string;
+  teacher_id?: string;
 }
 
 export interface UpdateSubjectRequest extends Partial<CreateSubjectRequest> {}
 
 export interface CreateEnrollmentRequest {
-  studentId: string;
-  subjectId: string;
+  student_id: string;
+  subject_id: string;
   status?: EnrollmentEntity['status'];
 }
 

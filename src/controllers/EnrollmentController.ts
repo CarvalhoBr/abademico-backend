@@ -41,7 +41,7 @@ export class EnrollmentController {
       }
 
       // Validate student exists and has correct role
-      const student = await UserModel.findById(value.studentId);
+      const student = await UserModel.findById(value.student_id);
       if (!student) {
         return ResponseUtil.badRequest(res, 'Student not found');
       }
@@ -50,13 +50,13 @@ export class EnrollmentController {
       }
 
       // Validate subject exists
-      const subjectExists = await SubjectModel.exists(value.subjectId);
+      const subjectExists = await SubjectModel.exists(value.subject_id);
       if (!subjectExists) {
         return ResponseUtil.badRequest(res, 'Subject not found');
       }
 
       // Check if enrollment already exists
-      const enrollmentExists = await EnrollmentModel.enrollmentExists(value.studentId, value.subjectId);
+      const enrollmentExists = await EnrollmentModel.enrollmentExists(value.student_id, value.subject_id);
       if (enrollmentExists) {
         return ResponseUtil.conflict(res, 'Student is already enrolled in this subject');
       }
@@ -86,8 +86,8 @@ export class EnrollmentController {
       }
 
       // Validate student exists and has correct role if provided
-      if (value.studentId) {
-        const student = await UserModel.findById(value.studentId);
+      if (value.student_id) {
+        const student = await UserModel.findById(value.student_id);
         if (!student) {
           return ResponseUtil.badRequest(res, 'Student not found');
         }
@@ -97,16 +97,16 @@ export class EnrollmentController {
       }
 
       // Validate subject exists if provided
-      if (value.subjectId) {
-        const subjectExists = await SubjectModel.exists(value.subjectId);
+      if (value.subject_id) {
+        const subjectExists = await SubjectModel.exists(value.subject_id);
         if (!subjectExists) {
           return ResponseUtil.badRequest(res, 'Subject not found');
         }
       }
 
       // Check if enrollment already exists (excluding current enrollment)
-      if (value.studentId && value.subjectId) {
-        const enrollmentExists = await EnrollmentModel.enrollmentExists(value.studentId, value.subjectId, id);
+      if (value.student_id && value.subject_id) {
+        const enrollmentExists = await EnrollmentModel.enrollmentExists(value.student_id, value.subject_id, id);
         if (enrollmentExists) {
           return ResponseUtil.conflict(res, 'Student is already enrolled in this subject');
         }

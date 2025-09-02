@@ -62,8 +62,8 @@ export class AuthController {
           name: user.name,
           email: user.email,
           role: user.role,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt
+          created_at: user.created_at,
+          updated_at: user.updated_at
         },
         resources
       }, 'User data retrieved successfully');

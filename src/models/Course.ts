@@ -42,7 +42,7 @@ export class CourseModel {
         name: data.name,
         code: data.code,
         description: data.description || null,
-        coordinator_id: data.coordinatorId || null
+        coordinator_id: data.coordinator_id || null
       })
       .returning('*');
     
@@ -55,7 +55,7 @@ export class CourseModel {
     if (data.name !== undefined) updateData.name = data.name;
     if (data.code !== undefined) updateData.code = data.code;
     if (data.description !== undefined) updateData.description = data.description;
-    if (data.coordinatorId !== undefined) updateData.coordinator_id = data.coordinatorId;
+    if (data.coordinator_id !== undefined) updateData.coordinator_id = data.coordinator_id;
     
     updateData.updated_at = new Date();
 

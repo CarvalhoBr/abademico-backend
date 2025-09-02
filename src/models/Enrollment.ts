@@ -61,8 +61,8 @@ export class EnrollmentModel {
   static async create(data: CreateEnrollmentRequest): Promise<Enrollment> {
     const [result] = await db('enrollments')
       .insert({
-        student_id: data.studentId,
-        subject_id: data.subjectId,
+        student_id: data.student_id,
+        subject_id: data.subject_id,
         status: data.status || 'active'
       })
       .returning('*');
@@ -73,8 +73,8 @@ export class EnrollmentModel {
   static async update(id: string, data: UpdateEnrollmentRequest): Promise<Enrollment | undefined> {
     const updateData: any = {};
     
-    if (data.studentId !== undefined) updateData.student_id = data.studentId;
-    if (data.subjectId !== undefined) updateData.subject_id = data.subjectId;
+    if (data.student_id !== undefined) updateData.student_id = data.student_id;
+    if (data.subject_id !== undefined) updateData.subject_id = data.subject_id;
     if (data.status !== undefined) updateData.status = data.status;
     
     updateData.updated_at = new Date();

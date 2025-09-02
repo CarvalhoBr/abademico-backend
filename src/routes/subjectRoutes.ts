@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { SubjectController } from '../controllers/SubjectController';
 import { validateBody, validateParams } from '../middlewares/validation';
+import { authenticateToken } from '../middlewares/auth';
 import {
   updateSubjectBodySchema,
   subjectIdParamSchema,
@@ -27,7 +28,7 @@ router.post('/:id/enroll',
   validateBody(enrollStudentBodySchema),
   SubjectController.enroll
 );
-router.delete('/:subjectId/enrollments/:studentId', 
+router.delete('/:subject_id/enrollments/:student_id', 
   validateParams(subjectEnrollParamsSchema), 
   SubjectController.unenroll
 );
