@@ -1,0 +1,710 @@
+{
+  "info": {
+    "name": "Academic System API - Complete Collection",
+    "description": "Collection completa para a API do Sistema Acadêmico com todas as rotas implementadas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Autenticação",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/auth/login",
+              "host": ["{{apiUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Verificar Usuário Autenticado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/auth/whoami",
+              "host": ["{{apiUrl}}"],
+              "path": ["auth", "whoami"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Usuários",
+      "item": [
+        {
+          "name": "Listar Todos os Usuários",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/users",
+              "host": ["{{apiUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Usuário por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Criar Usuário (Student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/users/student",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "student"]
+            }
+          }
+        },
+        {
+          "name": "Criar Usuário (Teacher)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maria Santos\",\n  \"email\": \"maria.santos@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/users/teacher",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "teacher"]
+            }
+          }
+        },
+        {
+          "name": "Criar Usuário (Coordinator)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pedro Costa\",\n  \"email\": \"pedro.costa@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/users/coordinator",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "coordinator"]
+            }
+          }
+        },
+        {
+          "name": "Criar Usuário (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ana Admin\",\n  \"email\": \"ana.admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/users/admin",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "admin"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Usuário",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva.updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Usuário",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Listar Usuários por Role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/users/role/student",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "role", "student"]
+            }
+          }
+        },
+        {
+          "name": "Listar Cursos do Usuário",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}/courses",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}", "courses"]
+            }
+          }
+        },
+        {
+          "name": "Adicionar Curso ao Usuário",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"course_id\": \"{{courseId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}/courses",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}", "courses"]
+            }
+          }
+        },
+        {
+          "name": "Remover Curso do Usuário",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/users/{{userId}}/courses/{{courseId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["users", "{{userId}}", "courses", "{{courseId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📚 Cursos",
+      "item": [
+        {
+          "name": "Criar Curso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ciência da Computação\",\n  \"code\": \"CC001\",\n  \"description\": \"Curso de graduação em Ciência da Computação\",\n  \"coordinator_id\": \"{{coordinatorId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/courses",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses"]
+            }
+          }
+        },
+        {
+          "name": "Listar Todos os Cursos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Curso por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Curso",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ciência da Computação Atualizado\",\n  \"description\": \"Curso atualizado com novas informações\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Curso",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Listar Semestres do Curso",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/semesters",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "semesters"]
+            }
+          }
+        },
+        {
+          "name": "Listar Estudantes do Curso",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/students",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "students"]
+            }
+          }
+        },
+        {
+          "name": "Listar Professores do Curso",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/teachers",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "teachers"]
+            }
+          }
+        },
+        {
+          "name": "Listar Disciplinas do Curso/Semestre",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/{{semesterId}}/subjects",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "{{semesterId}}", "subjects"]
+            }
+          }
+        },
+        {
+          "name": "Criar Disciplina no Curso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Programação I\",\n  \"code\": \"PROG001\",\n  \"credits\": 4,\n  \"semester_id\": \"{{semesterId}}\",\n  \"teacher_id\": \"{{teacherId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/subjects",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "subjects"]
+            }
+          }
+        },
+        {
+          "name": "Matricular em Disciplina",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/subjects/{{subjectId}}/enroll/{{studentId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "subjects", "{{subjectId}}", "enroll", "{{studentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Cancelar Matrícula em Disciplina",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/courses/{{courseId}}/subjects/{{subjectId}}/enrollment/{{studentId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["courses", "{{courseId}}", "subjects", "{{subjectId}}", "enrollment", "{{studentId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Semestres",
+      "item": [
+        {
+          "name": "Criar Semestre",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"2024-1\",\n  \"start_date\": \"2024-02-01T00:00:00.000Z\",\n  \"end_date\": \"2024-07-31T23:59:59.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/semesters",
+              "host": ["{{apiUrl}}"],
+              "path": ["semesters"]
+            }
+          }
+        },
+        {
+          "name": "Listar Todos os Semestres",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/semesters",
+              "host": ["{{apiUrl}}"],
+              "path": ["semesters"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Semestre por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/semesters/{{semesterId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["semesters", "{{semesterId}}"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Semestre",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"2024-1\",\n  \"start_date\": \"2024-02-01T00:00:00.000Z\",\n  \"end_date\": \"2024-08-31T23:59:59.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/semesters/{{semesterId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["semesters", "{{semesterId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Semestre",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/semesters/{{semesterId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["semesters", "{{semesterId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Health Check",
+      "item": [
+        {
+          "name": "Verificar Status da API",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "apiUrl",
+      "value": "{{baseUrl}}/api"
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "courseId",
+      "value": ""
+    },
+    {
+      "key": "semesterId",
+      "value": ""
+    },
+    {
+      "key": "subjectId",
+      "value": ""
+    },
+    {
+      "key": "studentId",
+      "value": ""
+    },
+    {
+      "key": "teacherId",
+      "value": ""
+    },
+    {
+      "key": "coordinatorId",
+      "value": ""
+    },
+    {
+      "key": "adminId",
+      "value": ""
+    }
+  ]
+}
