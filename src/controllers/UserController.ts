@@ -120,21 +120,6 @@ export class UserController {
         return ResponseUtil.conflict(res, 'Email already exists');
       }
 
-      // Validate course_ids for students
-      if (userData.role === 'student' && (!userData.course_ids || userData.course_ids.length === 0)) {
-        return ResponseUtil.badRequest(res, 'Course IDs are required for students');
-      }
-
-      // Validate course_ids exist if provided
-      if (userData.course_ids && userData.course_ids.length > 0) {
-        for (const course_id of userData.course_ids) {
-          const courseExists = await CourseModel.exists(course_id);
-          if (!courseExists) {
-            return ResponseUtil.badRequest(res, `Course with ID ${course_id} not found`);
-          }
-        }
-      }
-
       const user = await UserModel.create(userData);
       return ResponseUtil.created(res, user, 'User created successfully');
     } catch (error: any) {
@@ -161,22 +146,6 @@ export class UserController {
         if (emailExists) {
           return ResponseUtil.conflict(res, 'Email already exists');
         }
-      }
-
-      // Validate course_ids exist if provided
-      if (updateData.course_ids && updateData.course_ids.length > 0) {
-        for (const course_id of updateData.course_ids) {
-          const courseExists = await CourseModel.exists(course_id);
-          if (!courseExists) {
-            return ResponseUtil.badRequest(res, `Course with ID ${course_id} not found`);
-          }
-        }
-      }
-
-      // Validate role and course_ids relationship
-      const finalRole = updateData.role || existingUser.role;
-      if (finalRole === 'student' && (!updateData.course_ids || updateData.course_ids.length === 0)) {
-        return ResponseUtil.badRequest(res, 'Students must be assigned to at least one course');
       }
 
       const user = await UserModel.update(id!, updateData);

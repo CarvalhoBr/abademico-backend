@@ -9,13 +9,13 @@ export const statusSchema = Joi.string().valid('active', 'completed', 'dropped')
 export const createUserBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
-  course_ids: Joi.array().items(Joi.string().uuid()).optional()
+  password: Joi.string().min(8).required()
 });
 
 export const updateUserBodySchema = Joi.object({
   name: Joi.string().min(2).max(100).optional(),
   email: Joi.string().email().optional(),
-  course_ids: Joi.array().items(Joi.string().uuid()).optional()
+  password: Joi.string().min(8).optional()
 });
 
 
