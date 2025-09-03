@@ -20,7 +20,4 @@ router.put('/:id',
 );
 router.delete('/:id', validateParams(semesterIdParamSchema), SemesterController.delete);
 
-// Additional routes
-router.get('/:id/subjects', validateParams(semesterIdParamSchema), SemesterController.getSubjects);
-
 export default router;

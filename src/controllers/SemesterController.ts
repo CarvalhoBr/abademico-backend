@@ -119,21 +119,4 @@ export class SemesterController {
       return ResponseUtil.internalError(res, error.message);
     }
   }
-
-  static async getSubjects(req: Request, res: Response): Promise<Response> {
-    try {
-      const { id } = req.params;
-
-      const semesterExists = await SemesterModel.exists(id!);
-      if (!semesterExists) {
-        return ResponseUtil.notFound(res, 'Semester');
-      }
-
-      const subjects = await SemesterModel.getSubjects(id!);
-      return ResponseUtil.success(res, subjects, 'Semester subjects retrieved successfully');
-    } catch (error: any) {
-      console.error('Error fetching semester subjects:', error);
-      return ResponseUtil.internalError(res, error.message);
-    }
-  }
 }
