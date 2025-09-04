@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/AuthController';
 import { validateBody } from '../middlewares/validation';
-import { authenticateToken } from '../middlewares/auth';
+import { authenticateToken, authScope } from '../middlewares/auth';
 import Joi from 'joi';
 
 const router = Router();
@@ -14,7 +14,7 @@ const loginSchema = Joi.object({
 
 // Auth routes
 router.post('/login', validateBody(loginSchema), AuthController.login);
-router.get('/whoami', authenticateToken, AuthController.whoami);
+router.get('/whoami', authScope('users:whoami'), AuthController.whoami);
 
 export default router;
 

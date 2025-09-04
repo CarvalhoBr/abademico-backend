@@ -3,11 +3,12 @@ import { UserModel } from '../models/User';
 import { ResponseUtil } from '../utils/response';
 import { JwtUtil } from '../utils/jwt';
 import { getResourcesByRole } from '../utils/resources';
+import { KeycloakService } from '../services/KeycloakService';
 
 export class AuthController {
   static async login(req: Request, res: Response): Promise<Response> {
     try {
-      const { email } = req.body;
+      const { email, password } = req.body;
 
       // Find user by email
       const user = await UserModel.findByEmail(email);
@@ -15,16 +16,12 @@ export class AuthController {
         return ResponseUtil.error(res, 'INVALID_CREDENTIALS', 'Email not found', 401);
       }
 
-      // Generate JWT token with user id and name
-      const token = JwtUtil.generateToken({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      });
+      const keycloakService = new KeycloakService()
+
+      const tokens = await keycloakService.login(email, password)
 
       return ResponseUtil.success(res, {
-        access_token: token,
+        ...tokens,
         user: {
           id: user.id,
           name: user.name,

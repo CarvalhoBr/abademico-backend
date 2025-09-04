@@ -238,10 +238,7 @@ export class CourseController {
       const { id: course_id } = req.params;
 
       // Validate input
-      const { error, value } = createSubjectInCourseSchema.validate(req.body);
-      if (error) {
-        return ResponseUtil.validationError(res, error.details);
-      }
+      const data = req.body
 
       // Validate course exists
       const courseExists = await CourseModel.exists(course_id!);
@@ -250,20 +247,20 @@ export class CourseController {
       }
 
       // Validate semester exists
-      const semesterExists = await SemesterModel.exists(value.semester_id);
+      const semesterExists = await SemesterModel.exists(data.semester_id);
       if (!semesterExists) {
         return ResponseUtil.badRequest(res, 'Semester not found');
       }
 
       // Check if subject code already exists in the course and semester
-      const codeExists = await SubjectModel.codeExistsInCourseAndSemester(value.code, course_id!, value.semester_id);
+      const codeExists = await SubjectModel.codeExistsInCourseAndSemester(data.code, course_id!, data.semester_id);
       if (codeExists) {
         return ResponseUtil.conflict(res, 'Subject code already exists in this course and semester');
       }
 
               // Validate teacher exists and has correct role
-        if (value.teacher_id) {
-          const teacher = await UserModel.findById(value.teacher_id);
+        if (data.teacher_id) {
+          const teacher = await UserModel.findById(data.teacher_id);
           if (!teacher) {
             return ResponseUtil.badRequest(res, 'Teacher not found');
           }
@@ -272,7 +269,7 @@ export class CourseController {
           }
 
           // Validate that teacher is assigned to this course
-          const teacherInCourse = await UserCourseModel.exists(value.teacher_id, course_id!);
+          const teacherInCourse = await UserCourseModel.exists(data.teacher_id, course_id!);
           if (!teacherInCourse) {
             return ResponseUtil.badRequest(res, 'Teacher must be assigned to this course');
           }
@@ -280,7 +277,7 @@ export class CourseController {
 
       // Create subject with course_id from URL params
       const subjectData = {
-        ...value,
+        ...data,
         course_id: course_id!
       };
 

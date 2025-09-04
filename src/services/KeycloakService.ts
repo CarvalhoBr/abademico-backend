@@ -56,16 +56,17 @@ export class KeycloakService {
       const clientRole = data.find((r: any) => r.name === role)
       if (!clientRole) throw new Error(`Role não encontrada`)
 
-      await this.instance.post(`/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/role-mappings/clients/${process.env.KEYCLOAK_CLIENT_ID}`, {
+      await this.instance.post(`/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/role-mappings/clients/${process.env.KEYCLOAK_CLIENT_ID}`, [{
         id: clientRole.id,
         name: clientRole.name
-      }, {
+      }], {
         headers: {
           Authorization: `Bearer ${access_token}`
         }
       })
     } catch (error) {
-      
+      console.error(`Error to add user role ${JSON.stringify(error)}`)
+      throw new Error(`Error to add user role ${JSON.stringify(error)}`)
     }
   }
 
@@ -86,5 +87,21 @@ export class KeycloakService {
     }
   }
 
-
+  async login(username: string, password: string) {
+    try {
+      const { data } = await this.instance.post(`/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
+        new URLSearchParams({
+          client_id: process.env.KEYCLOAK_CLIENT!,
+          client_secret: process.env.KEYCLOAK_CLIENT_SECRET!,
+          grant_type: 'password',
+          username,
+          password
+        })
+      )
+      return data
+    } catch (error) {
+      console.error(`Error to authenticate user ${error}`)
+      throw new Error(`Error to authenticate user ${error}`)
+    }
+  }
 }

@@ -131,9 +131,10 @@ export class UserController {
           value: userData.password,
           temporary: false
         }],
-        emailVerified: true
+        emailVerified: true,
+        requiredActions: []
       }, role!)
-
+      // TODO: Add keycloakId column to user
       const user = await UserModel.create(userData);
       return ResponseUtil.created(res, user, 'User created successfully');
     } catch (error: any) {
