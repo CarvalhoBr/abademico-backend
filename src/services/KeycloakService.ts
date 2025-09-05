@@ -18,7 +18,7 @@ export class KeycloakService {
           new URLSearchParams({
             grant_type: 'client_credentials',
             client_id: process.env.KEYCLOAK_CLIENT,
-            client_secret: process.env.KEYCLOAK_SECRET
+            client_secret: process.env.KEYCLOAK_CLIENT_SECRET
           })
         )
         this.client_token = data.access_token
@@ -68,8 +68,12 @@ export class KeycloakService {
           Authorization: `Bearer ${clientToken}`
         }
       })
-      const { data: createdUser } = await this.client.get(`/admin/realms/${process.env.KEYCLOAK_REALM}/users?username=${userData.username}`)
-      await this.addRole(role, createdUser.id)
+      const { data: createdUser } = await this.client.get(`/admin/realms/${process.env.KEYCLOAK_REALM}/users?username=${userData.username}`, {
+        headers: {
+          Authorization : `Bearer ${clientToken}`
+        }
+      })
+      await this.addRole(role, createdUser[0].id)
     } catch (error) {
       console.error(`Error to create user ${error}`)
       throw new Error(`Error to create user ${error}`)

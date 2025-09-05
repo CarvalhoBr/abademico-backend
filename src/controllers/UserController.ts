@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserModel } from '../models/User';
 import { CourseModel } from '../models/Course';
 import { ResponseUtil } from '../utils/response';
+import { KeycloakService } from '../services/KeycloakService';
 
 export class UserController {
   static async getAll(req: Request, res: Response): Promise<Response> {
@@ -119,6 +120,22 @@ export class UserController {
       if (existingUser) {
         return ResponseUtil.conflict(res, 'Email already exists');
       }
+
+      const keycloakService = new KeycloakService()
+      const keycloakUser = await keycloakService.createUser({
+        enabled: true,
+        username: userData.email,
+        email: userData.email,
+        emailVerified: true,
+        firstName: userData.name.split(' ')[0],
+        lastName: userData.name.split(' ')[1],
+        requiredActions: [],
+        credentials: [{
+          temporary: false,
+          type: 'password',
+          value: userData.password
+        }]
+      }, role)
 
       const user = await UserModel.create(userData);
       return ResponseUtil.created(res, user, 'User created successfully');
