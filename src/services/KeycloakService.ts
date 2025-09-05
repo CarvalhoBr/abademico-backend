@@ -1,3 +1,4 @@
+import { CreateKeycloakUser } from '../types/keycloak';
 import axios, { head } from 'axios'
 
 export class KeycloakService {
@@ -58,7 +59,7 @@ export class KeycloakService {
     }
   }
 
-  async createUser(userData: any, role: string) {
+  async createUser(userData: CreateKeycloakUser, role: string) {
     try {
       const clientToken = await this.getClientToken()
 
@@ -67,7 +68,7 @@ export class KeycloakService {
           Authorization: `Bearer ${clientToken}`
         }
       })
-      const { data: createdUser } = await this.client.get(`/admin/realms/${process.env.KEYCLOAK_REALM}/users?username=${userData.name}`)
+      const { data: createdUser } = await this.client.get(`/admin/realms/${process.env.KEYCLOAK_REALM}/users?username=${userData.username}`)
       await this.addRole(role, createdUser.id)
     } catch (error) {
       console.error(`Error to create user ${error}`)
