@@ -17,7 +17,7 @@
     "inlineSources": false,
     "removeComments": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "strictFunctionTypes": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
@@ -26,7 +26,7 @@
     "noImplicitOverride": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false,
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {

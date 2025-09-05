@@ -1,0 +1,1406 @@
+{
+	"info": {
+		"_postman_id": "59c3c9e4-9fc1-4253-a2ba-c93ff07fb06a",
+		"name": "Academic System API - Complete Collection",
+		"description": "Collection completa para a API do Sistema Acadêmico com todas as rotas implementadas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10840944"
+	},
+	"item": [
+		{
+			"name": "🔐 Autenticação",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"const responseBody = pm.response.json();\r",
+									"\r",
+									"// Check if access_token exists in the response body\r",
+									"pm.test(\"access_token is present\", function () {\r",
+									"    pm.expect(responseBody.data).to.have.property(\"access_token\");\r",
+									"});\r",
+									"\r",
+									"// Set access_token as the collection authToken property\r",
+									"if (responseBody.data.access_token) {\r",
+									"    pm.collectionVariables.set(\"authToken\", responseBody.data.access_token);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"teste@uenf.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/auth/login",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verificar Usuário Autenticado",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/auth/whoami",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"auth",
+								"whoami"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👥 Usuários",
+			"item": [
+				{
+					"name": "Listar Todos os Usuários",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/users",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Usuário por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/users/{{userId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Usuário (Student)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/users/student",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Usuário (Teacher)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Maria Santos\",\n  \"email\": \"maria.santos@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/users/teacher",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"teacher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Usuário (Coordinator)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Pedro Costa\",\n  \"email\": \"pedro.costa@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/users/coordinator",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"coordinator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Usuário (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Ana Admin\",\n  \"email\": \"ana.admin@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/users/admin",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Usuário",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva.updated@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/users/{{userId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Usuário",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/users/{{userId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Usuários por Role",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/users/role/coordinator",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"role",
+								"coordinator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Cursos do Usuário",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/users/{{userId}}/courses",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar Curso ao Usuário",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"course_id\": \"{{courseId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/users/{{userId}}/courses",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover Curso do Usuário",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/users/{{userId}}/courses/{{courseId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}",
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📚 Cursos",
+			"item": [
+				{
+					"name": "Criar Curso",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Ciência da Computação\",\n  \"code\": \"CC001\",\n  \"description\": \"Curso de graduação em Ciência da Computação\",\n  \"coordinator_id\": \"29802012-3ec6-41c1-85b7-0b2d9cd57a1c\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/courses",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos os Cursos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Curso por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Curso",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Ciência da Computação Atualizado\",\n  \"description\": \"Curso atualizado com novas informações\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Curso",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Semestres do Curso",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}/semesters",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}",
+								"semesters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Estudantes do Curso",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}/students",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Professores do Curso",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}/teachers",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}",
+								"teachers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Disciplinas do Curso/Semestre",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}/{{semesterId}}/subjects",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}",
+								"{{semesterId}}",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Disciplina no Curso",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Programação I\",\n  \"code\": \"PROG001\",\n  \"credits\": 4,\n  \"semester_id\": \"{{semesterId}}\",\n  \"teacher_id\": \"{{teacherId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}/subjects",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matricular em Disciplina",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}/subjects/{{subjectId}}/enroll/{{studentId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}",
+								"subjects",
+								"{{subjectId}}",
+								"enroll",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Matrícula em Disciplina",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/courses/{{courseId}}/subjects/{{subjectId}}/enrollment/{{studentId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}",
+								"subjects",
+								"{{subjectId}}",
+								"enrollment",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📅 Semestres",
+			"item": [
+				{
+					"name": "Criar Semestre",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"2024-1\",\n  \"start_date\": \"2024-02-01T00:00:00.000Z\",\n  \"end_date\": \"2024-07-31T23:59:59.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/semesters",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"semesters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos os Semestres",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/semesters",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"semesters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Semestre por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/semesters/{{semesterId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"semesters",
+								"{{semesterId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Semestre",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"2024-1\",\n  \"start_date\": \"2024-02-01T00:00:00.000Z\",\n  \"end_date\": \"2024-08-31T23:59:59.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/semesters/{{semesterId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"semesters",
+								"{{semesterId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Semestre",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/semesters/{{semesterId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"semesters",
+								"{{semesterId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🏥 Health Check",
+			"item": [
+				{
+					"name": "Verificar Status da API",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Keycloak",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Auth",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "academico_backend",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "HRyajvOQDsKW3azlJuSzLu2LLtkFND45",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "brandon@uenf.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "admin123",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/realms/SCTI/protocol/openid-connect/token",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"realms",
+										"SCTI",
+										"protocol",
+										"openid-connect",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Client Auth",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});\r",
+											"\r",
+											"const responseBody = pm.response.json();\r",
+											"\r",
+											"// Check if access_token exists in the response body\r",
+											"pm.test(\"access_token is present\", function () {\r",
+											"    pm.expect(responseBody).to.have.property(\"access_token\");\r",
+											"});\r",
+											"\r",
+											"// Set access_token as the collection authToken property\r",
+											"if (responseBody.access_token) {\r",
+											"    pm.collectionVariables.set(\"serviceToken\", responseBody.access_token);\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "academico_backend",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "HRyajvOQDsKW3azlJuSzLu2LLtkFND45",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{keycloakUrl}}/realms/SCTI/protocol/openid-connect/token",
+									"host": [
+										"{{keycloakUrl}}"
+									],
+									"path": [
+										"realms",
+										"SCTI",
+										"protocol",
+										"openid-connect",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User-Info",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJTMFNKUmFZdUE1ZHhoSTA2V1dBaFI4aHdCR2h4M05ZV1JOZnoyZlZmS2RzIn0.eyJleHAiOjE3NTYyNDk2ODQsImlhdCI6MTc1NjI0ODc4NCwianRpIjoiZGIyMjFmYWItMWZiMi00NDA3LTkyNmYtMWQ1MTU5YjkwMGRmIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9TQ1RJIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImQ1Y2RlODMxLWI0MDAtNDQ3Ny1hZDA0LWQ1ZGE4YjE5YTkyMSIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhY2tlbmRfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6ImVmZGMzYWY2LWNhYmEtNGQ4MC04Njg2LTgyYTYxNmIzZjYyNiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDozMDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtc2N0aSIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiZWZkYzNhZjYtY2FiYS00ZDgwLTg2ODYtODJhNjE2YjNmNjI2IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJCcmFuZG9uIENhcnZhbGhvIiwicHJlZmVycmVkX3VzZXJuYW1lIjoic2N0aV90ZXN0IiwiZ2l2ZW5fbmFtZSI6IkJyYW5kb24iLCJmYW1pbHlfbmFtZSI6IkNhcnZhbGhvIiwiZW1haWwiOiJzY3RpX3Rlc3RAZ21haWwuY29tIn0.EgOkTghYuOIS3DzlUNM7QGvsqQxianVu9UovG7J1iuI6il9mOnqtUo7Q7infGmRa22Zlhb4ZHZ-EeD1NQ0LNCYAjeFwGUtGm7Fzf7Iwx5x6wN-mziu8HQq4jBHGzA5F_hwOSk1TJPxOCi6LycVnHo3t4wHarVSGMfQuYKlk5GJ92-dRS8ur2R3ZBLJouODdzSG_v82fPJEKJKtJel7_3n37QXKPTRBlK714eO8iFOAlWlm8HYQBjjemxFHSq1xlzpOZ5JtfFn1amN_nlgoOmKt4aR-dwbRWQZreBFouNiZ-M4RbGUeqWZKeUDYGHH0cB7I4lMpIJcW3wz88YP0ucJg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "backend_app",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "WZ289dAi08q3mmBfLCxxesiEqBLQuEw0",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "scti_test",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "password",
+											"value": "admin123",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/realms/SCTI/protocol/openid-connect/userinfo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"realms",
+										"SCTI",
+										"protocol",
+										"openid-connect",
+										"userinfo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Requesting Party Token",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJTMFNKUmFZdUE1ZHhoSTA2V1dBaFI4aHdCR2h4M05ZV1JOZnoyZlZmS2RzIn0.eyJleHAiOjE3NTYyNTI3OTAsImlhdCI6MTc1NjI1MTg5MCwianRpIjoiMDFjMjJiMDAtMTdjMC00OWM4LWE1YzItYjYxN2I5MWVmOGNiIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9TQ1RJIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImQ1Y2RlODMxLWI0MDAtNDQ3Ny1hZDA0LWQ1ZGE4YjE5YTkyMSIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhY2tlbmRfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjFiNDdmZTkwLThkMzEtNDRhOS04YWRmLTJiN2VhY2FhOTRlMSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDozMDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwiZGVmYXVsdC1yb2xlcy1zY3RpIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiIxYjQ3ZmU5MC04ZDMxLTQ0YTktOGFkZi0yYjdlYWNhYTk0ZTEiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkJyYW5kb24gQ2FydmFsaG8iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzY3RpX3Rlc3QiLCJnaXZlbl9uYW1lIjoiQnJhbmRvbiIsImZhbWlseV9uYW1lIjoiQ2FydmFsaG8iLCJlbWFpbCI6InNjdGlfdGVzdEBnbWFpbC5jb20ifQ.kIqSkswRSwzKtm9x35PO4dIrXZUnU2v9M2s7clHjrIJulKFYJzgG_pKv7mVLAVKnkaiQCpogUVnYbkGANtlfNgxSt8U8YdZMtFtHyh16hiUC0QsqEfbwBhzd412TSfXFCExKE1vnY4aG4MYYjOFvTcXCuJef719tL4ag-vwjN1zrlhsTtarwJC14MYjOKyJ3iz2sKgEpkGozg9jb7WjvH1edejpFA02K7tmTGytmWf7F9i_wF0oo0y_4U8ZtCQq7a8OMGJrtT6dDXmzUlhyNLZ2zl_UkDfxcKPuzK7qTgIUPp78lxVErVeLPitLFjcy_l2NiEhiRaBsqhNwY6W5WlQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer ACCESS_TOKEN_AQUI"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "urn:ietf:params:oauth:grant-type:uma-ticket",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "backend_app",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "WZ289dAi08q3mmBfLCxxesiEqBLQuEw0",
+											"type": "text"
+										},
+										{
+											"key": "audience",
+											"value": "backend_app",
+											"type": "text"
+										},
+										{
+											"key": "response_mode",
+											"value": "permissions",
+											"type": "text"
+										},
+										{
+											"key": "permission",
+											"value": "users#list",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/realms/SCTI/protocol/openid-connect/token",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"realms",
+										"SCTI",
+										"protocol",
+										"openid-connect",
+										"token"
+									]
+								},
+								"description": "Generated from cURL: curl -X POST \"http://localhost:8080/realms/myrealm/protocol/openid-connect/token\" \\\r\n  -H \"Content-Type: application/x-www-form-urlencoded\" \\\r\n  -d \"grant_type=urn:ietf:params:oauth:grant-type:uma-ticket\" \\\r\n  -d \"client_id=backend\" \\\r\n  -d \"client_secret=YOUR_CLIENT_SECRET\" \\\r\n  -d \"audience=backend\" \\\r\n  -d \"response_mode=permissions\" \\\r\n  -d \"permission=users#list\" \\\r\n  -H \"Authorization: Bearer ACCESS_TOKEN_AQUI\""
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Create User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{serviceToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"enabled\": true,\r\n    \"username\": \"ausberto\",\r\n    \"email\": \"ausberto@uenf.com\",\r\n    \"credentials\": [\r\n        {\r\n            \"type\": \"password\",\r\n            \"value\": \"teste123\",\r\n            \"temporary\": false\r\n        }\r\n    ],\r\n    \"emailVerified\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{keycloakUrl}}/admin/realms/SCTI/users",
+									"host": [
+										"{{keycloakUrl}}"
+									],
+									"path": [
+										"admin",
+										"realms",
+										"SCTI",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{serviceToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\r\n        \"id\": \"3dae2f89-2a01-4165-a364-900d797d7f5e\",\r\n        \"name\": \"admin-academico\"\r\n    }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{keycloakUrl}}/admin/realms/SCTI/users/:userId/role-mappings/clients/:clientId",
+									"host": [
+										"{{keycloakUrl}}"
+									],
+									"path": [
+										"admin",
+										"realms",
+										"SCTI",
+										"users",
+										":userId",
+										"role-mappings",
+										"clients",
+										":clientId"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "619ed656-db79-4b64-be91-4171f1c9a248"
+										},
+										{
+											"key": "clientId",
+											"value": "e8ff4f1d-d292-4af9-bb18-2e7b4255d99b"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find by username",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{serviceToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{keycloakUrl}}/admin/realms/SCTI/users?username=ausberto",
+									"host": [
+										"{{keycloakUrl}}"
+									],
+									"path": [
+										"admin",
+										"realms",
+										"SCTI",
+										"users"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "ausberto"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List client roles",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{serviceToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{keycloakUrl}}/admin/realms/SCTI/clients/:clientId/roles",
+									"host": [
+										"{{keycloakUrl}}"
+									],
+									"path": [
+										"admin",
+										"realms",
+										"SCTI",
+										"clients",
+										":clientId",
+										"roles"
+									],
+									"variable": [
+										{
+											"key": "clientId",
+											"value": "e8ff4f1d-d292-4af9-bb18-2e7b4255d99b"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "apiUrl",
+			"value": "{{baseUrl}}/api"
+		},
+		{
+			"key": "authToken",
+			"value": ""
+		},
+		{
+			"key": "keycloakUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "serviceToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
