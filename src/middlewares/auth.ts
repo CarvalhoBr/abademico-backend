@@ -13,7 +13,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
   }
 
   try {
-    const decoded: any = jwt.verify(token, process.env.KEYCLOAK_PUBLIC_KEY);
+    const decoded: any = jwt.verify(token, process.env.KEYCLOAK_PUBLIC_KEY.replace(/\\n/g, "\n"));
     const user = await UserModel.findByEmail(decoded.email);
     (req as any).user = user;
     (req as any).userId = decoded.id; // Add userId to request context for easier access
