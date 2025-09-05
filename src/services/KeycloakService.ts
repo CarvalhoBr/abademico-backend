@@ -1,4 +1,4 @@
-import { CreateKeycloakUser } from '@/types/keycloak';
+import { CreateKeycloakUser, UserPermission } from '../types/keycloak';
 import axios from 'axios';
 
 export class KeycloakService {
@@ -102,6 +102,29 @@ export class KeycloakService {
     } catch (error) {
       console.error(`Error to authenticate user ${error}`)
       throw new Error(`Error to authenticate user ${error}`)
+    }
+  }
+
+  async getUserPermissions(accessToken: string): Promise<UserPermission[]> {
+    try {
+      const { data } = await this.instance.post(`/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
+        new URLSearchParams({
+          client_id: process.env.KEYCLOAK_CLIENT!,
+          client_secret: process.env.KEYCLOAK_CLIENT_SECRET!,
+          grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
+          audience: process.env.KEYCLOAK_CLIENT!,
+          response_mode: 'permissions'
+        }),
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      )
+      return data
+    } catch (error) {
+      console.error(`Error to get client permissions: ${JSON.stringify(error)}`)
+      throw new Error(`Error to get client permissions: ${JSON.stringify(error)}`)
     }
   }
 }

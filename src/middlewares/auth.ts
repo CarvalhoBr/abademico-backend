@@ -3,7 +3,7 @@ import { JwtUtil } from '../utils/jwt';
 import { ResponseUtil } from '../utils/response';
 import jwt from 'jsonwebtoken'
 import { UserModel } from '../models/User';
-import { getResourcesByRole } from '../utils/resources';
+import { KeycloakService } from '../services/KeycloakService';
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers['authorization'];
@@ -34,7 +34,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const authScope = (scope: string) => {
+export const authScope = (authScope: string) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -54,23 +54,18 @@ export const authScope = (scope: string) => {
       (req as any).user = user;
       (req as any).userId = user?.id;
     }
-    const roles = decoded.resource_access[process.env.KEYCLOAK_CLIENT!].roles
-    let hasAccess = false
-    roles.forEach((role: string) => {
-      const resources = getResourcesByRole(role)
-      const [resourceName, action] = scope.split(':')
-      const resource = resources.find(r => r.name === resourceName)
-      if(resource?.actions.includes(action!)){
-        hasAccess = true
-      }
-    })
-    if (!hasAccess){
+    const keycloakService = new KeycloakService()
+
+    const userPermissions = await keycloakService.getUserPermissions(token)
+    const [resource, scope] = authScope.split(':')
+    const requestedResource = userPermissions.find((permission) => permission.rsname === resource)
+    if(!requestedResource || !requestedResource?.scopes.includes(scope!)) {
       ResponseUtil.error(res, 'FORBIDEN', 'Não autorizado', 403)
       return
     }
     next()
   } catch (error) {
-    throw error
+    ResponseUtil.error(res, 'INTERNAL_ERROR', 'Erro interno', 500)
   }
   }
 }

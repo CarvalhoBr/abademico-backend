@@ -12,3 +12,9 @@ export interface CreateKeycloakUser {
   requiredActions?: string[];
   emailVerified?: boolean;
 }
+
+export interface UserPermission {
+  scopes: string[],
+  rsid: string,
+  rsname: string
+}
