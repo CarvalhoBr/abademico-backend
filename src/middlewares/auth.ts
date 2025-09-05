@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtUtil } from '../utils/jwt';
 import { ResponseUtil } from '../utils/response';
+import jwt from 'jsonwebtoken'
+import { UserModel } from '../models/User';
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
@@ -12,8 +13,9 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    const decoded = JwtUtil.verifyToken(token);
-    (req as any).user = decoded;
+    const decoded: any = jwt.verify(token, process.env.KEYCLOAK_PUBLIC_KEY);
+    const user = await UserModel.findByEmail(decoded.email);
+    (req as any).user = user;
     (req as any).userId = decoded.id; // Add userId to request context for easier access
     next();
   } catch (error: any) {

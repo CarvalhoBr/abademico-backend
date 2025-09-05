@@ -29,6 +29,25 @@ export class KeycloakService {
       throw error
     }
   }
+  
+  async login(username: string, password: string) {
+    try {
+      const { data } = await this.client.post(`/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
+        new URLSearchParams({
+          grant_type: 'password',
+          client_id: process.env.KEYCLOAK_CLIENT,
+          client_secret: process.env.KEYCLOAK_CLIENT_SECRET,
+          username,
+          password
+        })
+      )
+      
+      return data
+    } catch (error) {
+      console.error(`Error to login user ${error}`)
+      throw error
+    }
+  }
 
   async addRole(role: string, userId: string) {
     try {
